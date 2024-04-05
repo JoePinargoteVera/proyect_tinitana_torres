@@ -1,0 +1,18 @@
+@import '~bootstrap/dist/css/bootstrap.min.css';
+@import "~bootstrap-icons/font/bootstrap-icons.css";
+
+.back{
+    background-color: rgba(255, 255, 255, .7);
+}
+
+.input-group-text, .form-control {
+    border: 0.5 !important;
+    box-shadow: none !important;
+    border-radius: 1 !important;
+    
+}
+
+.form-control{
+    border-left: 0;
+}
+

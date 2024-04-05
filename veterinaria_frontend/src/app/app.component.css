@@ -1,0 +1,40 @@
+@import '~bootstrap/dist/css/bootstrap.min.css';
+
+
+.navLateral {
+  left: 0;
+  max-width: 330px;
+  width: 330px;
+  min-width: 0px;
+  z-index: 100;
+  transition: all 0.3s ease;
+  background-image: url(../assets/animales.jpeg);
+  background-size: cover;
+  color: #fff;
+  overflow: hidden;
+  position: fixed;
+  top: 0;
+  bottom: auto;
+  max-height: 100vh;
+  overflow-y: auto;
+}
+
+
+.collapsed {
+  width: 0px;
+}
+
+.content {
+  margin-left: auto;
+  /* Ancho del sidebar */
+  transition: margin-left 0.3s ease;
+}
+
+.content.collapsed {
+  margin-left: auto;
+  width: auto;
+  
+}
+
+
+
