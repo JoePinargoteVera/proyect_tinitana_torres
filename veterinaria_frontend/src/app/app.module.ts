@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule,  HTTP_INTERCEPTORS } from '@angular/common/http';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { JwtModule, JWT_OPTIONS } from '@auth0/angular-jwt';
 import { CookieService } from 'ngx-cookie-service';
@@ -23,12 +23,14 @@ import { AngularFireStorageModule} from '@angular/fire/compat/storage';
 import { AppSettings } from 'appsettings-json-reader';
 import { CategoryComponent } from './pages/category/category.component';
 import { InventoryComponent } from './pages/inventory/inventory.component';
-import { FilterPipeModule} from 'ngx-filter-pipe';
-import { OrderModule} from 'ngx-order-pipe';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { ToastrModule } from 'ngx-toastr';
 import { NgApexchartsModule} from 'ng-apexcharts';
 import { TransactionComponent } from './pages/transaction/transaction.component'
+import { NgSelectModule } from '@ng-select/ng-select';
+import { NgScrollbarModule } from 'ngx-scrollbar';
+import { ConfirmInterceptor } from './confirm.interceptor';
+import { FormatDatePipe } from './pipes/format-date.pipe';
 
 const appSettings = AppSettings.readAppSettings();
 
@@ -55,12 +57,15 @@ export function jwtOptionsFactory(cookieService: CookieService) {
     UserComponent,
     CategoryComponent,
     InventoryComponent,
-    TransactionComponent
+    TransactionComponent,
+    FormatDatePipe,
   ],
   imports: [
     BrowserModule,
+    NgScrollbarModule,
     BrowserAnimationsModule,
     NgApexchartsModule,
+    NgSelectModule,
     AppRoutingModule,
     AngularFireModule.initializeApp(appSettings.firebaseConfig),
     AngularFireStorageModule,
@@ -82,7 +87,7 @@ export function jwtOptionsFactory(cookieService: CookieService) {
       preventDuplicates: true,
     }),
   ],
-  providers: [ServiceStorage],
+  providers: [ServiceStorage,  { provide: HTTP_INTERCEPTORS, useClass: ConfirmInterceptor, multi: true }],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

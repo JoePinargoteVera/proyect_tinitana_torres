@@ -6,6 +6,7 @@ use App\Models\Client;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 
 class ClienteController extends Controller
@@ -29,7 +30,7 @@ class ClienteController extends Controller
         } catch (ValidationException $e) {
             return response()->json([
                 'message' => 'los datos enviados no cumplen con las especificaciones',
-                'error' => $e->errors(),
+                'validationError' => $e->errors(),
                 'status' => Response::HTTP_UNPROCESSABLE_ENTITY
             ]);
         }
@@ -51,13 +52,12 @@ class ClienteController extends Controller
 
             DB::commit();
             return response()->json([
-                'data' => $cliente,
+                'cliente' => $cliente,
                 'message' => 'cliente registrado con exito',
                 'status' => Response::HTTP_CREATED
             ]);
         } catch (\Throwable $th) {
             DB::rollBack();
-
             return response()->json([
                 'message' => 'no se pudo registrar al cliente',
                 'error' => $th->getMessage(),
@@ -105,7 +105,7 @@ class ClienteController extends Controller
             }
 
             return response()->json([
-                'data' => $cliente,
+                'cliente' => $cliente,
                 'message' => 'cliente obtenido con exito',
                 'status' => Response::HTTP_FOUND
             ]);
@@ -156,13 +156,20 @@ class ClienteController extends Controller
     {
         try {
 
+            $cliente = Client::where('id',$request->id)->first();
+            
             $request->validate([
                 'nombres' => 'sometimes|string|max:100',
-                'email' => 'sometimes|email|unique:clients,email|max:100',
+                'email' => [
+                    'sometimes',
+                    'email',
+                    Rule::unique('clients', 'email')->ignore($cliente->id),
+                    'max:100',
+                ],
                 'apellidos' => 'sometimes|string|max:100',
                 'nacionalidad' => 'sometimes|string|max:100',
                 'telefono_uno' => 'sometimes|string|max:20',
-                'telefono_dos' => 'sometimes|string|max:20',
+                'telefono_dos' => 'sometimes|string|max:20|nullable',
                 'direccion' => 'sometimes|string|max:255',
                 'genero' => 'sometimes|string|max:100',
                 'fecha_nacimiento'=>'sometimes|nullable|date'
@@ -172,7 +179,7 @@ class ClienteController extends Controller
 
             return response()->json([
                 'message' => 'no se pueden procesar los datos enviados',
-                'error' => $e->errors(),
+                'validationError' => $e->errors(),
                 'status' => Response::HTTP_UNPROCESSABLE_ENTITY
             ]);
         }
@@ -180,7 +187,7 @@ class ClienteController extends Controller
         DB::beginTransaction();
         try {
 
-            $cliente = Client::where('id',$request->id)->first();
+            
             if (!$cliente) {
                 return response()->json([
                     'message' => 'cliente no encontrado',
@@ -190,12 +197,14 @@ class ClienteController extends Controller
             // dd($request->all());
             $cliente->fill($request->all())->save();
 
+            DB::commit();
             return response()->json([
-                'data' => $cliente,
+                'cliente' => $cliente,
                 'message' => 'datos actualizados con exito',
                 'status' => Response::HTTP_OK
             ]);
         } catch (\Throwable $th) {
+            DB::rollBack();
             return response()->json([
                 'message'=>'ha ocurrido un error inesperado al actualizar los datos, intentelo mas tarde',
                 'error'=>$th->getMessage(),
@@ -217,7 +226,8 @@ class ClienteController extends Controller
                     'status' => Response::HTTP_NOT_FOUND
                 ]);
             }
-            $client->delete();
+            $client->estado = false; // Cambiar estado a false en lugar de eliminar
+            $client->save();
 
             DB::commit();
             return response()->json([

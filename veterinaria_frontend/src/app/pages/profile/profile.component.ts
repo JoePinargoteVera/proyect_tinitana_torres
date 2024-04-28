@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ToastrService } from 'ngx-toastr';
 import { ServiceStorage } from 'src/app/Service/storage.service';
 import { User } from 'src/app/interface/iuser';
 
@@ -12,7 +13,7 @@ export class ProfileComponent implements OnInit {
   errorMessage : String=''
   user!: User;
 
-  constructor(private serviceStorage: ServiceStorage){
+  constructor(private serviceStorage: ServiceStorage, private toastr: ToastrService){
 
   }
   ngOnInit(): void {

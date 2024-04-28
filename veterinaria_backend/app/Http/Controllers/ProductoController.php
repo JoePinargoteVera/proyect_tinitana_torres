@@ -26,7 +26,7 @@ class ProductoController extends Controller
         } catch (ValidationException $e) {
             return response()->json([
                 'message' => 'no se pueden procesar los datos enviados',
-                'error' => $e->errors(),
+                'validationError' => $e->errors(),
                 'status' => Response::HTTP_UNPROCESSABLE_ENTITY
             ]);
         }
@@ -47,7 +47,7 @@ class ProductoController extends Controller
 
             DB::commit();
             return response()->json([
-                'data' => $producto,
+                'producto' => $producto,
                 'message' => 'producto registrado con exito',
                 'status' => Response::HTTP_CREATED
             ]);
@@ -66,7 +66,7 @@ class ProductoController extends Controller
     {
 
         try {
-            $producto = Product::with('proveedor', 'categoria')->get();
+            $producto = Product::with('proveedor', 'categoria')->where('estado', true)->get();
             if ($producto->isEmpty()) {
 
                 return response()->json([
@@ -91,7 +91,7 @@ class ProductoController extends Controller
     public function ObtenerProducto(Request $request)
     {
         try {
-            $producto = Product::where('id', $request->id)->first();
+            $producto = Product::where(['id', $request->id, 'estado', true])->first();
             if (!$producto) {
 
                 return response()->json([
@@ -101,7 +101,7 @@ class ProductoController extends Controller
             }
 
             return response()->json([
-                'data' => $producto,
+                'producto' => $producto,
                 'message' => 'producto obtenido con exito',
                 'status' => Response::HTTP_FOUND
             ]);
@@ -150,8 +150,7 @@ class ProductoController extends Controller
                         $query->whereBetween('costo', [$valores[0], $valores[1]]);
                     }
                 }
-
-            })->with('proveedor', 'categoria')->get();
+            })->with('proveedor', 'categoria')->where('estado', true)->get();
 
 
             if ($productos->isEmpty()) {
@@ -189,7 +188,7 @@ class ProductoController extends Controller
 
             return response()->json([
                 'message' => 'no se pueden procesar los datos enviados',
-                'error' => $e->errors(),
+                'validationError' => $e->errors(),
                 'status' => Response::HTTP_UNPROCESSABLE_ENTITY
             ]);
         }
@@ -206,12 +205,14 @@ class ProductoController extends Controller
             }
             $producto->fill($request->all())->save();
 
+            DB::commit();
             return response()->json([
-                'data' => $producto,
+                'producto' => $producto,
                 'message' => 'datos actualizados con exito',
                 'status' => Response::HTTP_OK
             ]);
         } catch (\Throwable $th) {
+            DB::rollBack();
             return response()->json([
                 'message' => 'ha ocurrido un error inesperado al actualizar los datos, intentelo mas tarde',
                 'error' => $th->getMessage(),
@@ -227,13 +228,13 @@ class ProductoController extends Controller
             $product = Product::findOrFail($request->id);
 
             if (!$product) {
-                # code...
                 return response()->json([
                     'message' => 'no se encontro el producto',
                     'status' => Response::HTTP_NOT_FOUND
                 ]);
             }
-            $product->delete();
+            $product->estado = false; // Cambiar estado a false en lugar de eliminar
+            $product->save();
 
             DB::commit();
             return response()->json([
@@ -244,6 +245,7 @@ class ProductoController extends Controller
             Db::rollBack();
             return response()->json([
                 'message' => 'no se pudo eliminar al producto, por favor intentelo mas tarde',
+                'error' => $th->getMessage(),
                 'status' => Response::HTTP_INTERNAL_SERVER_ERROR
             ]);
         }

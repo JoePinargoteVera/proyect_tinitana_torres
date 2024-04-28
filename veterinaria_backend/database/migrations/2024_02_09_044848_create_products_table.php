@@ -22,8 +22,10 @@ return new class extends Migration
             $table->decimal('pvp',10,2);
             $table->decimal('costo',10,2);
             $table->integer('stock')->default(0);
-            $table->unsignedBigInteger('categoria_id');
+            $table->string('etiqueta')->default('disponible');
             $table->string('imagen')->nullable();
+            $table->boolean('estado')->default(true);
+            $table->unsignedBigInteger('categoria_id');
             $table->foreign('categoria_id')->references('id')->on('product_categories');
             $table->unsignedBigInteger('proveedor_id');
             $table->foreign('proveedor_id')->references('id')->on('providers');

@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('observacion')->nullable();
             $table->date('fecha')->default(now());
             $table->time('hora');
+            $table->boolean('estado')->default(true);
             $table->unsignedBigInteger('cliente_id');
             $table->foreign('cliente_id')->references('id')->on('clients');
             $table->timestamps();

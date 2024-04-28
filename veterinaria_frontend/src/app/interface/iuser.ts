@@ -1,4 +1,3 @@
-import { Binary } from "@angular/compiler";
 
 export interface IResUser {
     total?: number;
@@ -6,12 +5,19 @@ export interface IResUser {
     user: User;
     token: string;
     status: string;
+    error:string;
     message: string;
+    validationError: {
+        [key: string]: string[]; // Cada propiedad de error puede tener un array de mensajes de error
+      };
 }
 
 export interface User {
     id?: number;
     name: string;
+    nombres?:string;
+    apellidos?:string;
+    cedula?:string
     password: string;
     email: string;
     rol: string;

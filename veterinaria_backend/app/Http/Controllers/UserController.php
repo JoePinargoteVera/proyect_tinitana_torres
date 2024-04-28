@@ -28,7 +28,7 @@ class UserController extends Controller
         } catch (ValidationException $e) {
             return response()->json([
                 'message' => 'no se pueden procesar los datos enviados',
-                'error' => $e->errors(),
+                'validationError' => $e->errors(),
                 'status' => Response::HTTP_UNPROCESSABLE_ENTITY
             ]);
         }
@@ -51,7 +51,7 @@ class UserController extends Controller
 
             DB::commit();
             return response()->json([
-                'data' => $user,
+                'user' => $user,
                 'message' => 'usuario registrado con exito',
                 'status' => Response::HTTP_CREATED
             ]);
@@ -104,7 +104,7 @@ class UserController extends Controller
             }
 
             return response()->json([
-                'data' => $usuario,
+                'user' => $usuario,
                 'message' => 'usuario obtenido con exito',
                 'status' => Response::HTTP_FOUND
             ]);
@@ -162,13 +162,13 @@ class UserController extends Controller
                 'email' => 'sometimes|email|unique:users,email|max:255',
                 'telefono' => 'sometimes|string|max:20',
                 'direccion' => 'sometimes|string|max:255',
-                'imagen' => 'sometimes|image|mimes:jpeg,png,jpg,gif|max:2048'
+                // 'imagen' => 'sometimes|image|mimes:jpeg,png,jpg,gif|max:2048'
             ]);
         } catch (ValidationException $e) {
 
             return response()->json([
                 'message' => 'no se pueden procesar los datos enviados',
-                'error' => $e->errors(),
+                'validationError' => $e->errors(),
                 'status' => Response::HTTP_UNPROCESSABLE_ENTITY
             ]);
         }
@@ -185,12 +185,14 @@ class UserController extends Controller
             }
             $usuario->fill($request->all())->save();
 
+            DB::commit();
             return response()->json([
-                'data' => $usuario,
+                'user' => $usuario,
                 'message' => 'datos actualizados con exito',
                 'status' => Response::HTTP_OK
             ]);
         } catch (\Throwable $th) {
+            DB::rollBack();
             return response()->json([
                 'message' => 'ha ocurrido un error inesperado al actualizar los datos, intentelo mas tarde',
                 'error' => $th->getMessage(),
@@ -213,7 +215,8 @@ class UserController extends Controller
                     'status' => Response::HTTP_NOT_FOUND
                 ]);
             }
-            $user->delete();
+            $user->estado = false; // Cambiar estado a false en lugar de eliminar
+            $user->save();
 
             DB::commit();
             return response()->json([

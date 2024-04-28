@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
+import { ToastrService } from 'ngx-toastr';
 import { catchError, tap } from 'rxjs';
 import { AuthService } from 'src/app/Service/auth.service';
 import { ServiceStorage } from 'src/app/Service/storage.service';
@@ -20,7 +21,7 @@ export class AuthComponent {
 
   constructor(private formBuilder: FormBuilder, private appComponent: AppComponent,
     private serviceStorage: ServiceStorage, private auth: AuthService, private router: Router, 
-    private cookieService: CookieService){
+    private cookieService: CookieService, private toastr: ToastrService){
 
       this.appComponent.showNavbar = false;
       this.loginForm = this.formBuilder.group({

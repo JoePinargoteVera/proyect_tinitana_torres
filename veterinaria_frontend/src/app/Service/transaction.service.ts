@@ -56,6 +56,13 @@ export class TransactionService {
     const token = this.cookieService.get('token');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     const options = { headers: headers };
-    return this.http.delete<IResTransaction>(`${url}transaccion/eliminar?id=${id}`)
+    return this.http.delete<IResTransaction>(`${url}transaccion/eliminar?id=${id}`, options)
+  }
+
+  listarPorCliente(id:number):Observable<IResTransaction>{
+    const token = this.cookieService.get('token');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    const options = { headers: headers };
+    return this.http.get<IResTransaction>(`${url}transaccion/lista_clientes?id=${id}`,options);
   }
 }

@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { ToastrService } from 'ngx-toastr';
 import { catchError, tap } from 'rxjs';
 import { ImagenesService } from 'src/app/Service/imagenes.service';
 import { ProviderService } from 'src/app/Service/provider.service';
@@ -11,6 +12,7 @@ import { Provider } from 'src/app/interface/iprovider';
 })
 export class ProviderComponent {
 
+  loading:boolean = false
   addProvider:boolean=true
   listProvider:boolean=false
   imagenes: any[] = [];
@@ -24,7 +26,8 @@ export class ProviderComponent {
     razon_social: ''
   }
 
-  constructor(private providerService: ProviderService,  private imagenesService: ImagenesService){
+  constructor(private providerService: ProviderService,  private imagenesService: ImagenesService, 
+    private toastr: ToastrService){
 
   }
 
@@ -71,18 +74,32 @@ export class ProviderComponent {
   }
 
   crearProveedor(){
-    console.log(this.proveedor);
+    this.loading = true
     
     this.providerService.crearProveedor(this.proveedor).pipe(
       tap(data=>{
-        this.succesMessage = data.message
-        console.log(data);
+        this.loading = false
+        if (data.status == '422') {
+
+          const errors = data.validationError;
+
+          Object.keys(errors).forEach(key => {
+
+            const errorMessage = errors[key][0]
+            this.toastr.warning(errorMessage, 'Error')
+
+
+          });
+        } else if (data.status == '500') {
+          this.toastr.error(data.error, 'Error');
+        }else{
+          this.toastr.success(data.message, 'Exito');
+        }
         
       }),
       catchError(error=>{
-        this.errorMessage = error.error.error
-        console.log(this.errorMessage);
-        
+        this.loading = false
+        this.errorMessage = error.error.error       
         return  this.errorMessage
       }) 
     ).subscribe()
@@ -98,7 +115,7 @@ export class ProviderComponent {
       reader.onloadend = () => {
         console.log(reader.result);
         this.imagenes.push(reader.result);
-        this.imagenesService.subirImagen('products', this.proveedor.nombre + Date.now(), reader.result).then(urlImagen => {
+        this.imagenesService.subirImagen('providers/', this.proveedor.nombre, reader.result).then(urlImagen => {
           console.log(urlImagen);
           this.proveedor.imagen = urlImagen
         });

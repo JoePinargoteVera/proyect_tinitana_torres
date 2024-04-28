@@ -1,111 +1,255 @@
 <div class="mt-5 ">
-    <div class="row justify-content-center border-bottom border-2 w-100">
-      <div class="col-auto">
-        <button  class="btn" [class.selected]="addClient" (click)="showAddClientForm()">NUEVO</button>
-        <button  class="btn" [class.selected]="!addClient" (click)="showListClients()">VER</button>
-      </div>
+  <div class="row justify-content-center border-bottom border-2 w-100">
+    <div class="col-auto">
+      <button class="btn rounded-0" [class.selected]="addClient" (click)="showAddClientForm()">NUEVO</button>
+      <button class="btn rounded-0" [class.selected]="!addClient" (click)="showListClients()">VER</button>
     </div>
-    <div *ngIf="addClient" class="mt-3" id="">
-      <div class="container">
-        <h2 class="mt-5 ms-4">Agregar Nuevo cliente</h2>
-        <form>
-          <div class="mb-3">
-            <label for="nombre" class="form-label">Nombres</label> <!--[ngModel]="producto.nombre"-->
-            <input type="text" class="form-control" name="nombres" [(ngModel)]="cliente.nombres"  placeholder="ingrese el/los nombres" required>
+  </div>
+  <div *ngIf="addClient" class="mt-3">
+    <div class="container">
+
+      <div class=" text-white text-center"
+        style="background-color: #2e6da4; height: 45px; font-size: 20px; line-height: 45px;">
+        Nuevo cliente
+      </div>
+
+      <form>
+
+        <div class="mt-2 mb-3">
+          <i class="bi bi-pencil-square"></i> INFORMACION BASICA
+        </div>
+
+        <div class="row mb-2">
+          <div class="col-md-6">
+            <div class="mb-3 border-bottom border-2 form-floating">
+              <input type="text" id="nombres" class="form-control " placeholder="nombres" name="nombres"
+                [(ngModel)]="cliente.nombres" required>
+              <label for="nombres">Nombres</label>
+            </div>
           </div>
-          <div class="mb-3">
-            <label for="apellidos" class="form-label">Apellidos</label>
-            <input type="text" class="form-control" name="apellidos" [(ngModel)]="cliente.apellidos" placeholder="ingrese el/los apellidos" required>
+          <div class="col-md-6">
+            <div class="mb-3 border-bottom border-2 form-floating form-floating-label-disabled-color:">
+              <input type="text" id="apellidos" class="form-control " name="apellidos" [(ngModel)]="cliente.apellidos"
+                placeholder="Ingrese los apellidos" required autocomplete="name">
+              <label for="apellidos">Apellidos</label>
+            </div>
           </div>
-          <div class="mb-3">
-            <label for="cedula" class="form-label">Cédula</label>
-            <input type="text" step="0.01" class="form-control"  name="cedula"[(ngModel)]="cliente.cedula"  placeholder="ingrese una direccion" required>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <div class="mb-3 border-bottom border-2 form-floating">
+              <input type="text" id="cedula" class="form-control" name="cedula" [(ngModel)]="cliente.cedula"
+                placeholder="Ingrese el costo" required>
+              <label for="cedula" class="form-label">Cedula</label>
+            </div>
           </div>
-          <div class="mb-3">
-            <label for="email" class="form-label">Correo Electronico (email)</label>
-            <input type="email" step="0.01" class="form-control" name="email" [(ngModel)]="cliente.email" placeholder="ingrese el email" required>
+          <div class="col-md-6 ">
+            <div class="mb-3 border-bottom border-2 form-floating">
+              <input type="text" class="form-control" id="email" name="email" [(ngModel)]="cliente.email"
+                placeholder="email" required>
+              <label for="email" class="form-label">Email</label>
+            </div>
           </div>
-          <div class="mb-3">
-            <label for="direccion" class="form-label">Dirección</label>
-            <input type="text" class="form-control" name="direccion" [(ngModel)]="cliente.direccion" placeholder="ingrese la direccion">
+        </div>
+
+        <!--  -->
+
+        <div class="mb-3">
+          <i class="bi bi-pencil-square"></i> INFORMACION DE CONTACTO
+        </div>
+        <div class="row mb-3">
+          <div class="col-md-4">
+            <div class="mb-3 border-bottom border-2 form-floating">
+              <input type="text" class="form-control" id="direccion" name="direccion" placeholder="direccion"
+                [(ngModel)]="cliente.direccion">
+              <label for="direccion">Dirección</label>
+            </div>
           </div>
-          <div class="mb-3">
-            <label for="telefono_uno" class="form-label">telefono principal</label>
-            <input type="tel" class="form-control" name="telefono_uno" [(ngModel)]="cliente.telefono_uno" placeholder="Ingrese el telefono principal">
+
+          <div class="col-md-4">
+            <div class="mb-3 border-bottom border-2 form-floating">
+              <input type="text" class="form-control" id="telefono_uno" placeholder="telefono uno" name="telefono_uno"
+                [(ngModel)]="cliente.telefono_uno">
+              <label for="telefono_uno">Telefono 1</label>
+            </div>
           </div>
-          <div class="mb-3">
-            <label for="telefono_dos" class="form-label">telefono secundario</label>
-            <input type="tel" class="form-control" name="telefono_dos" [(ngModel)]="cliente.telefono_dos" placeholder="Ingrese el telefono secundario">
+
+          <div class="col-md-4">
+            <div class="mb-3 border-bottom border-2 form-floating">
+              <input type="text" class="form-control" id="telefono_dos" placeholder="telefono dos" name="telefono_dos"
+                [(ngModel)]="cliente.telefono_dos">
+              <label for="telefono_dos">Telefono 2</label>
+            </div>
           </div>
-          <!-- <div class="mb-3">
-            <label for="descripcion" class="form-label">Descripción:</label>
-            <textarea id="descripcion" name="descripcion" rows="4" class="form-control" [(ngModel)]="cliente.telefono_uno" ></textarea>
-        </div> -->
-          <div class="mb-3">
-            <label for="genero" class="form-label">Genero</label>
-            <select class="form-select"  name="genero"  [(ngModel)]="cliente.genero" >
+        </div>
+
+        <div class="mb-3">
+          <i class="bi bi-pencil-square"></i> IDENTIDAD
+        </div>
+        <div class="row">
+          <div class="mb-3 col-md-6 d-flex align-items-center">
+            <label for="genero" class="form-label me-2">Genero</label>
+            <select class="form-select flex-grow-1" name="genero" [(ngModel)]="cliente.genero">
               <option selected disabled>Seleccione el genero</option>
               <option value="masculino">Masculino</option>
               <option value="femenino">Femenino</option>
               <option value="no binario">No Binario</option>
             </select>
           </div>
-          <div class="mb-3">
-            <label for="nacionalidad" class="form-label">Nacionalidad</label>
-            <select class="form-select" name="nacionalidad" [(ngModel)]="cliente.nacionalidad" >
-              <option selected disabled>Seleccione un pais</option>
+
+
+          <div class="mb-3 col-md-6 d-flex align-items-center">
+            <label for="nacionalidad" class="form-label me-2">Nacionalidad</label>
+            <select class="form-select flex-grow-1" name="nacionalidad" [(ngModel)]="cliente.nacionalidad">
+              <option selected disabled>Seleccione un país</option>
               <option value="ecuatoriano">Ecuador</option>
+              <option value="venezolano">Venezuela</option>
+              <option value="peruano">Peru</option>
+              <option value="uruguayo">Uruguay</option>
+              <option value="boliviano">Bolivia</option>
+              <option value="colombiano">Colombia</option>
+              <option value="chileno">Chile</option>
+              <option value="argentino">Argentina</option>
+
             </select>
           </div>
-          <button type="submit" class="btn btn-primary" (click)="crearCliente()">Agregar Cliente</button>
-        </form>
+
+        </div>
+
+        <div class=" text-center">
+          <button type="submit" class="btn btn-primary mb-5 align-self-end rounded-5" (click)="crearCliente()"
+            [disabled]="loading">
+            <span><i class="bi bi-person-plus"> crear Cliente </i></span>
+            <span *ngIf="loading"><i class="spinner-border spinner-border-sm" role="status"
+                aria-hidden="true"></i></span>
+          </button>
+        </div>
+
+      </form>
+     <hr>
+    </div>
+
+  </div>
+
+
+  <div *ngIf="listClient" class="mt-3">
+
+
+    <div class="container">
+      <div class=" text-white text-center"
+        style="background-color: #4cbb90; height: 45px; font-size: 20px; line-height: 45px;">
+        lista de clientes
+      </div>
+      <div class="container mt-3">
+        <div class="row">
+          <div class="col">
+            <div class="input-group  w-50 mb-3">
+              <div class="border-bottom border-2">
+                <input type="text" class="form-control" [(ngModel)]="filtro" (input)="buscarClientes()"
+                  placeholder="Buscar clientes">
+              </div>
+
+              <button class="btn" type="button" (click)="buscarClientes()"><i class="bi bi-search"></i></button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="container mt-3">
+        <ul class="list-group mb-1 me-1" *ngFor="let cliente of clienteList">
+          <li class="list-group-item d-flex justify-content-between align-items-center bg-light">
+            <div>
+              <div>{{ cliente.nombres }} {{cliente.apellidos}}</div>
+              <div class="fw-lighter text-primary">{{cliente.cedula}}</div>
+
+            </div>
+            <div class="dropdown">
+              <button class="btn" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="bi bi-three-dots"></i>
+              </button>
+              <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <li><button class="dropdown-item" href="#" (click)="[asignarCliente(cliente),verTransacciones(cliente.id)]" data-bs-toggle="modal" data-bs-target="#verCliente">Ver</button></li>
+                <li><button class="dropdown-item" href="#">Eliminar</button></li>
+              </ul>
+            </div>
+          </li>
+
+        </ul>
+
+      </div>
+    </div>
+  </div>
+  <hr>
+</div>
+
+
+<div class="modal fade" id="verCliente" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">{{cliente.nombres}} {{cliente.apellidos}}</h1>
+      <button type="button" class="btn-close alin" (click)="cancelarEditar()" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body">
+        <div class="row">
+          <!-- Columna de la imagen y descripción producto.imagen ? (producto.imagen) : '../../../assets/productos_back.png' -->
+          <div class="col-md-4 mx-2 bg-light" style="width: 25%;">
+            <div class="px-1">
+            <div class="m-2 image-wrapper">
+              <img [src]="cliente.imagen ? (cliente.imagen) : '../../../assets/avatar.png'" alt="Imagen del cliente" class="mb-3 rounded-5" style="max-width: 100%; height: 150px;">
+            </div>
+            <!-- Botón para editar la imagen -->
+            <!-- <button class="btn btn-sm btn-primary position-absolute top-0 translate-middle" type="button">
+              Editar imagen
+            </button> -->
+            <!-- Descripción del producto -->
+            <h5>Direccion</h5>
+            <p class="ms-2">{{cliente.direccion}} </p>
+            </div>
+           
+          </div>
+      
+          <!-- Columna de la información del cliente-->
+          <div class="col-md-4 bg-light mx-2">
+            <div class="px-1 mt-2">
+              <div class="d-inline"><h5 class="mb-3 d-inline">Información del cliente </h5> <button (click)="editar()" class="btn d-inline bg-primary-subtle"><i class="bi bi-pen d-inline" ></i></button></div>
+              <p><strong>Cedula:</strong> <input type="text"  class="form-control d-inline w-50 py-0" [(ngModel)]="cliente.cedula" [disabled]="!edit" [ngClass]="{'edit-mode': edit}" ></p>
+              <p><strong>Email:</strong> <input type="text"  class="form-control  d-inline py-0" [(ngModel)]="cliente.email" [disabled]="!edit" [ngClass]="{'edit-mode': edit}" style="width:auto"></p>
+              <p><strong>Telefono 1:</strong> <input type="text" class="form-control  d-inline w-50 py-0" [(ngModel)]="cliente.telefono_uno" [disabled]="!edit" [ngClass]="{'edit-mode': edit}"></p>
+              <p><strong>Telefono 2:</strong> {{ cliente.telefono_dos}}</p>
+            <!-- Más información del producto según tus necesidades rounded-0 border-bottom : cliente.telefono_uno ? 'no registrado'-->
+            </div>
+            
+          </div>
+      
+          <!-- Columna de la información del proveedor -->
+          <div class="col-md-4 bg-light mx-2">
+            <div class="px-1">
+              <h5 class="mb-3">Historial de compras</h5>
+              <p><strong>Nombre:</strong> {{ cliente.nombres}}</p>
+              <p><strong>Teléfono:</strong> {{ cliente.telefono_uno}}</p>
+              <p><strong>Email:</strong> {{ cliente.email}}</p>
+              <p><strong>Dirección:</strong> {{ cliente.direccion}}</p>
+
+              <div class="flow">
+                <div *ngFor="let tran of transacciones">
+                  <p>{{tran?.fecha | formatDate}} {{tran?.hora}}</p>
+                  </div>
+              </div>
+              
+              <!-- Más información del proveedor según tus necesidades -->
+            </div>
+          </div>
+        </div>
       </div>
       
-    </div>
-  
-  
-    <div *ngIf="listClient" class="mt-3">
-      <h2 class="mt-5 ms-4">Ver cliente</h2>
-  
-      <div class="container"> 
-          <div class="container mt-5">
-              <div class="row">
-                  <div class="col">
-                      <div class="input-group mb-3">
-                          <input type="text" class="form-control" [(ngModel)]="filtro" (input)="buscarClientes()" placeholder="Buscar clientes">
-                          <button class="btn btn-primary" type="button" (click)="buscarClientes()">Buscar</button>
-                      </div>
-                  </div>
-              </div>
-          </div>
-          
-          <div class="d-flex flex-wrap">
-              <div class="card w-25 mb-3 me-1" *ngFor="let cliente of clienteList">
-                  <!-- <div class="m-2">
-                      <img src="https://github.com/mdo.png" class="card-img-top img-fluid" alt="Producto">
-                  </div> -->
-                  <div class="card-body">
-                      <h5 class="card-title">{{cliente.nombres}}</h5>
-                      <p class="card-text">{{cliente.apellidos}}</p>
-                      <p class="card-text">{{cliente.cedula}}</p>
-                  </div>
-                  <div class="card-footer d-flex justify-content-between align-items-center">
-                      <h5 class="card-text">{{cliente.nacionalidad}} $</h5>
-                      <div class="dropdown">
-                          <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                              <i class="bi bi-three-dots"></i>
-                          </button>
-                          <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                              <li><a class="dropdown-item" href="#">Editar</a></li>
-                              <li><a class="dropdown-item" href="#">Eliminar</a></li>
-                          </ul>
-                      </div>
-                  </div>
-              </div>
-          </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="cancelarEditar()" data-bs-dismiss="modal">Cerrar</button>
+        <button type="button" class="btn btn-secondary" (click)="cancelarEditar()" [disabled]="!edit">Cancelar edicion</button>
+        <button type="button" class="btn btn-primary" (click)="actualizarCliente()" [disabled]="!edit">Guardar Cambios</button>
       </div>
+    </div>
   </div>
-  
-  </div>
-  
-  
+</div>

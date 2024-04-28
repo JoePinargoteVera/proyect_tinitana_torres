@@ -19,7 +19,8 @@ return new class extends Migration
             $table->decimal('descuento',10,2)->nullable();
             $table->decimal('iva',10,2)->nullable();
             $table->decimal('total',10,2);
-            $table->boolean('estado');
+            $table->boolean('estado')->default(true);
+            $table->date('vencimiento');
             $table->unsignedBigInteger('transaccion_id');
             $table->foreign('transaccion_id')->references('id')->on('transactions');
             $table->unsignedBigInteger('user_id');

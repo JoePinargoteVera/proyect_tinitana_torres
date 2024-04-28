@@ -20,7 +20,7 @@ class CategoriaController extends Controller
         } catch (ValidationException $e) {
             return response()->json([
                 'message' => 'los datos enviados no cumplen con las especificaciones',
-                'error' => $e->errors(),
+                'validationError' => $e->errors(),
                 'status' => Response::HTTP_UNPROCESSABLE_ENTITY
             ]);
         }
@@ -30,11 +30,12 @@ class CategoriaController extends Controller
 
             $categoria = new ProductCategorie();
             $categoria->nombre = $request->nombre;
+            $categoria->descripcion = $request->descripcion;
             $categoria->save();
 
             DB::commit();
             return response()->json([
-                'data' => $categoria,
+                'categoria' => $categoria,
                 'message' => 'categoria registrada con exito',
                 'status' => Response::HTTP_CREATED
             ]);
@@ -86,7 +87,7 @@ class CategoriaController extends Controller
             }
 
             return response()->json([
-                'data' => $categoria,
+                'categoria' => $categoria,
                 'message' => 'categoria obtenido con exito',
                 'status' => Response::HTTP_FOUND
             ]);
@@ -99,7 +100,7 @@ class CategoriaController extends Controller
         }
     }
 
-    public function BuscarClientes(Request $request)
+    public function BuscarCategorias(Request $request)
     {
 
         $filtro = $request->filtro;
@@ -141,7 +142,7 @@ class CategoriaController extends Controller
 
             return response()->json([
                 'message' => 'no se pueden procesar los datos enviados',
-                'error' => $e->errors(),
+                'validationError' => $e->errors(),
                 'status' => Response::HTTP_UNPROCESSABLE_ENTITY
             ]);
         }
@@ -158,14 +159,16 @@ class CategoriaController extends Controller
             }
             $categoria->fill($request->all())->save();
 
+            DB::commit();
             return response()->json([
-                'data' => $categoria,
+                'categoria' => $categoria,
                 'message' => 'datos actualizados con exito',
                 'status' => Response::HTTP_OK
             ]);
         } catch (\Throwable $th) {
+            DB::rollBack();
             return response()->json([
-                'message'=>'ha ocurrido un error inesperado al actualar los datos, intentelo mas tarde',
+                'message'=>'ha ocurrido un error inesperado al actualizar los datos, intentelo mas tarde',
                 'error'=>$th->getMessage(),
                 'status'=>Response::HTTP_INTERNAL_SERVER_ERROR
             ]);
@@ -186,7 +189,8 @@ class CategoriaController extends Controller
                     'status' => Response::HTTP_NOT_FOUND
                 ]);
             }
-            $category->delete();
+            $category->estado = false; // Cambiar estado a false en lugar de eliminar
+            $category->save();
 
             DB::commit();
             return response()->json([

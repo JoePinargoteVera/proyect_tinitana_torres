@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ToastrService } from 'ngx-toastr';
 import { catchError, tap } from 'rxjs';
 import { BillService } from 'src/app/Service/bill.service';
 import { ClientService } from 'src/app/Service/client.service';
@@ -19,6 +20,7 @@ import { Product } from 'src/app/interface/iproduct';
 export class TransactionComponent implements OnInit {
   [x: string]: any;
 
+  email: string = 'pozovet@gmail.com'
   filtro: any
   totalGeneral: number = 0
   user: any
@@ -41,12 +43,14 @@ export class TransactionComponent implements OnInit {
   factura: any = {}
   facturagenerada: any = {}
 
+  idFactura:number = 0
   mostrar: boolean = false;
   datosCargando: boolean = true;
+  facturaEnviada:boolean = false;
 
   constructor(private productService: ProductService, private clienteService: ClientService,
     private transaccionService: TransactionService, private billService: BillService,
-    private serviceStorage: ServiceStorage) { }
+    private serviceStorage: ServiceStorage, private toastr: ToastrService) { }
 
   ngOnInit(): void {
     this.user = this.serviceStorage.obtenerDato('user')
@@ -127,24 +131,58 @@ export class TransactionComponent implements OnInit {
     this.transaccionService.crearTransaccion(this.transaccion).pipe(
       tap(data => {
 
-        this.factura = data.data
-        this.factura.transaccion_id = this.factura.id
-        this.factura.user_id = this.user.id
-        this.factura.estado = true
+        if (data.status == '422') {
 
-        this.factura.iva = (this.calcularTotalGeneral() * 15) / 100
+          const errors = data.validationError;
+
+          Object.keys(errors).forEach(key => {
+
+            const errorMessage = errors[key][0]
+            this.toastr.warning(errorMessage, 'Error')
+
+
+          });
+        } else if (data.status == '500') {
+          this.toastr.error(data.error, 'Error');
+        }
+
+        // asignacion de datos para crear factura
+        this.transaccion.transaccion_id =data.transaccion.id
+        this.transaccion.user_id = this.user.id
+        this.transaccion.estado = true
+
+        this.transaccion.iva = (this.calcularTotalGeneral() * 15) / 100
 
         //crear factura
-        this.billService.crearFactura(this.factura).pipe(
+        this.billService.crearFactura(this.transaccion).pipe(
           tap(dato => {
             console.log(dato);
-            this.facturagenerada = dato.data
+            this.facturagenerada = dato.factura
+            this.idFactura = dato.factura.id
             this.datosCargando = false;
+
+            if (data.status == '422') {
+
+              const errors = data.validationError;
+    
+              Object.keys(errors).forEach(key => {
+    
+                const errorMessage = errors[key][0]
+                this.toastr.warning(errorMessage, 'Error')
+    
+    
+              });
+            } else if (data.status == '500') {
+              this.toastr.error(data.error, 'Error');
+            }else{
+              this.toastr.success(data.message, 'Exito');
+            }
 
           }),
           catchError(error => {
             this.errorMessage = error.error.message
-            console.log(error);
+
+            this.toastr.error(error.error.message, 'Error');
 
             return this.errorMessage
           })
@@ -152,9 +190,7 @@ export class TransactionComponent implements OnInit {
       }),
       catchError(error => {
         this.errorMessage = error.error
-        console.log(error.error.error);
-
-        console.log(this.errorMessage);
+        this.toastr.error(error.error.message, 'Error');
 
         return this.errorMessage
       })
@@ -167,6 +203,26 @@ export class TransactionComponent implements OnInit {
 
     this.cliente = this.clienteList.find(cliente => cliente.id === id)
     console.log(this.cliente);
+  }
+
+  enviarFactura(){
+    console.log(this.idFactura);
+    
+    this.billService.enviarFactura(this.idFactura).pipe(
+      tap(data=>{
+        
+        console.log(data);
+        
+        this.toastr.success(data.message, 'Éxito');
+
+      }),
+      catchError(error=>{
+        console.log(error.error);
+        
+        this.toastr.error(error.error.message, 'Error');
+        return error.error.message
+      })
+    ).subscribe()
   }
 
 }

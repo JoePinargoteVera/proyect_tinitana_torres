@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\Bill as MailBill;
 use App\Models\Bill;
-use App\Models\DetalleTransaccion;
+use Dompdf\Dompdf;
+use Dompdf\Options;
+use Illuminate\Support\Facades\Mail;
+use App\Models\Transaction;
 use App\Models\TransactionDetail;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -30,12 +34,11 @@ class FacturaController extends Controller
             $factura->total = $this->calcularTotal($factura->subtotal, $factura->iva);
             $factura->user_id = $request->user_id;
             $factura->transaccion_id = $request->transaccion_id;
-
-            // $factura->fecha_vencimiento = $fechaVencimiento->toDateString();
+            $factura->vencimiento = $fechaVencimiento->toDateString();
             $factura->save();
 
             return response()->json([
-                'data' => $factura,
+                'factura' => $factura,
                 'message' => 'factura creada con exito',
                 'status' => Response::HTTP_CREATED
             ]);
@@ -86,7 +89,8 @@ class FacturaController extends Controller
         return $numeroFactura;
     }
 
-    private function calcularTotal($sub_total, $iva){
+    private function calcularTotal($sub_total, $iva)
+    {
 
         $total = ($sub_total + $iva);
 
@@ -164,7 +168,7 @@ class FacturaController extends Controller
             }
 
             return response()->json([
-                'data' => $factura,
+                'factura' => $factura,
                 'message' => 'la factura ha sido obtenida con exito',
                 'status' => Response::HTTP_FOUND
             ]);
@@ -182,7 +186,7 @@ class FacturaController extends Controller
 
         try {
             $request->validate([
-                'filtro' => 'required|string', // Filtro de búsqueda
+                'id' => 'required|numeric', // Filtro de búsqueda
             ]);
         } catch (ValidationException $e) {
             return response()->json([
@@ -194,10 +198,12 @@ class FacturaController extends Controller
 
         try {
 
-            $filtro = $request->filtro;
+            $id = $request->id;
 
             // Realizar la consulta de las facturas que coincidan con el filtro
-            $facturas = Bill::with([
+            // $productos = Product::where(function ($query) use ($filtro, $proveedores, $categorias, $filtroCosto) 
+
+            $datosFactura = Bill::with([
                 'transaccion' => function ($query) {
                     $query->select('id', 'cliente_id', 'fecha', 'hora', 'observacion');
                 },
@@ -211,30 +217,57 @@ class FacturaController extends Controller
                     $query->select('id', 'name', 'email');
                 },
                 'transaccion.client' => function ($query) {
-                    $query->select('id', 'nombres', 'cedula');
+                    $query->select('*');
                 }
-            ])
-                ->whereHas('transaccion.client', function ($query) use ($filtro) {
-                    $query->where('nombres', 'like', "%$filtro%") // Buscar por nombre del cliente
-                        ->orWhere('cedula', 'like', "%$filtro%"); // También por cédula
-                })
-                ->orWhere('numero', 'like', "%$filtro%") // Buscar por número de factura
-                ->orWhereHas('transaccion', function ($query) use ($filtro) {
-                    $query->where('fecha_emision', 'like', "%$filtro%"); // Buscar por fecha de emisión de la factura
-                })
-                ->orWhereHas('transaccion.transactionDetail.product', function ($query) use ($filtro) {
-                    $query->where('nombre', 'like', "%$filtro%"); // Buscar por nombre de producto
-                })
-                ->get();
-            if ($facturas->isEmpty()) {
+            ])->where('id', $id)
+                ->first();
+
+            if (!$datosFactura) {
                 return response()->json([
                     'message' => 'no se han encontrado coincidencias',
                     'status' => Response::HTTP_NOT_FOUND
                 ]);
             }
 
+            $view = view('factura');
+            $view->with('datosFactura', $datosFactura);
+            $contenidoHTML = $view->render();
+
+            $opciones = new Options();
+            $opciones->set('isHtml5ParserEnabled', true);
+            $opciones->set('isRemoteEnabled', true);
+
+            $dompdf = new Dompdf($opciones);
+
+            $dompdf->loadHtml($contenidoHTML);
+
+            // Renderizar el PDF
+            $dompdf->render();
+
+            // Obtener el contenido del PDF como una cadena
+            $contenidoPDF = $dompdf->output();
+            // dd($datosFactura->transaccion->client->email);
+
+            if ($datosFactura->transaccion->client) {
+                $email = $datosFactura->transaccion->client->email;
+            } else {
+                return response()->json([
+                    'messaje' => 'no se ha podido obtener el email del cliente',
+                    'status' => Response::HTTP_BAD_REQUEST
+                ]);
+            }
+
+            // Mail::to($email)
+            //     ->send(new MailBill($contenidoPDF, $datosFactura));
+
+            // Guardar el PDF en el servidor (opcional)
+            $pdfPath = storage_path('app/public/facturas/factura.pdf');
+            file_put_contents($pdfPath, $contenidoPDF);
+
+            return view('factura')->with('datosFactura',$datosFactura);
+
             return response()->json([
-                'data' => $facturas,
+                'data' => $datosFactura,
                 'message' => 'facturas encontrados con exito',
                 'status' => Response::HTTP_FOUND
             ]);
@@ -263,7 +296,9 @@ class FacturaController extends Controller
             }
 
             // Eliminar la factura
-            $factura->delete();
+            $factura->estado = false; // Cambiar estado a false en lugar de eliminar
+            $factura->save();
+
             DB::commit();
             return response()->json([
                 'message' => 'La factura ha sido eliminada correctamente',
@@ -273,6 +308,103 @@ class FacturaController extends Controller
             DB::rollBack();
             return response()->json([
                 'message' => 'ocurrio un inconveniente al eliminar la factura, intentelo mas tarde',
+                'error' => $th->getMessage(),
+                'status' => Response::HTTP_INTERNAL_SERVER_ERROR
+            ]);
+        }
+    }
+
+    function enviarFactura(Request $request)
+    {
+
+        try {
+            $request->validate([
+                'id' => 'required|numeric', // Filtro de búsqueda
+            ]);
+        } catch (ValidationException $e) {
+            return response()->json([
+                'message' => 'los datos enviados no cumplen con las especificaciones',
+                'error' => $e->errors(),
+                'status' => Response::HTTP_UNPROCESSABLE_ENTITY
+            ]);
+        }
+
+        try {
+
+            $id = $request->id;
+
+            $datosFactura = Bill::with([
+                'transaccion' => function ($query) {
+                    $query->select('id', 'cliente_id', 'fecha', 'hora', 'observacion');
+                },
+                'transaccion.transactionDetail' => function ($query) {
+                    $query->select('id', 'transaccion_id', 'producto_id', 'cantidad', 'total');
+                },
+                'transaccion.transactionDetail.product' => function ($query) {
+                    $query->select('id', 'nombre', 'pvp', 'codigo_barras');
+                },
+                'user' => function ($query) {
+                    $query->select('id', 'name', 'email');
+                },
+                'transaccion.client' => function ($query) {
+                    $query->select('*');
+                }
+            ])->where('id', $id)
+                ->first();
+
+            if (!$datosFactura) {
+                return response()->json([
+                    'message' => 'no se han encontrado coincidencias',
+                    'status' => Response::HTTP_NOT_FOUND
+                ]);
+            }
+
+
+            $opciones = new Options();
+            $opciones->set('isPhpEnabled', true);
+            $opciones->set('isHtml5ParserEnabled', true);
+            $opciones->set('isRemoteEnabled', true);
+
+            $dompdf = new Dompdf($opciones);
+
+            $view = view('factura');
+            $view->with('datosFactura', $datosFactura);
+            $contenidoHTML = $view->render();
+
+            $dompdf->loadHtml($contenidoHTML);
+
+            // Renderizar el PDF
+            $dompdf->render();
+
+            // Obtener el contenido del PDF como una cadena
+            $contenidoPDF = $dompdf->output();
+
+            if ($datosFactura->transaccion->client) {
+                $email = $datosFactura->transaccion->client->email;
+            } else {
+                return response()->json([
+                    'messaje' => 'no se ha podido obtener el email del cliente',
+                    'status' => Response::HTTP_BAD_REQUEST
+                ]);
+            }
+
+            // Mail::to($email)
+            //     ->send(new MailBill($contenidoPDF, $datosFactura));
+
+            // Guardar el PDF en el servidor (opcional)
+            $pdfPath = storage_path('app/public/facturas/factura.pdf');
+            file_put_contents($pdfPath, $contenidoPDF);
+
+            return view('factura')->with('datosFactura',$datosFactura);
+
+            return response()->json([
+                'data' => $datosFactura,
+                'message' => 'factura enviada con exito',
+                'status' => Response::HTTP_FOUND
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => 'no se pudo enviar la factura, intentelo mas tarde',
                 'error' => $th->getMessage(),
                 'status' => Response::HTTP_INTERNAL_SERVER_ERROR
             ]);

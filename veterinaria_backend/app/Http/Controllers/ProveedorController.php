@@ -27,7 +27,7 @@ class ProveedorController extends Controller
         } catch (ValidationException $e) {
             return response()->json([
                 'message' => 'los datos enviados no cumplen con las especificaciones',
-                'error' => $e->errors(),
+                'validationError' => $e->errors(),
                 'status' => Response::HTTP_UNPROCESSABLE_ENTITY
             ]);
         }
@@ -47,7 +47,7 @@ class ProveedorController extends Controller
 
             DB::commit();
             return response()->json([
-                'data' => $proveedor,
+                'proveedor' => $proveedor,
                 'message' => 'proveedor registrado con exito',
                 'status' => Response::HTTP_CREATED
             ]);
@@ -66,8 +66,8 @@ class ProveedorController extends Controller
     {
 
         try {
-            $proveedor = Provider::all();
-            if ($proveedor->isEmpty()) {
+            $proveedores = Provider::all();
+            if ($proveedores->isEmpty()) {
 
                 return response()->json([
                     'message' => 'no existe ningun proveedor registrado',
@@ -75,7 +75,7 @@ class ProveedorController extends Controller
                 ]);
             }
             return response()->json([
-                'data' => $proveedor,
+                'data' => $proveedores,
                 'message' => 'lista de proveedores obtenida con exito',
                 'status' => Response::HTTP_FOUND
             ]);
@@ -101,7 +101,7 @@ class ProveedorController extends Controller
             }
 
             return response()->json([
-                'data' => $proveedor,
+                'proveedor' => $proveedor,
                 'message' => 'proveedor obtenido con exito',
                 'status' => Response::HTTP_FOUND
             ]);
@@ -176,7 +176,7 @@ class ProveedorController extends Controller
 
             return response()->json([
                 'message' => 'no se pueden procesar los datos enviados',
-                'error' => $e->errors(),
+                'validationError' => $e->errors(),
                 'status' => Response::HTTP_UNPROCESSABLE_ENTITY
             ]);
         }
@@ -193,12 +193,14 @@ class ProveedorController extends Controller
             }
             $proveedor->fill($request->all())->save();
 
+            DB::commit();
             return response()->json([
-                'data' => $proveedor,
+                'proveedor' => $proveedor,
                 'message' => 'datos actualizados con exito',
                 'status' => Response::HTTP_OK
             ]);
         } catch (\Throwable $th) {
+            DB::rollBack();
             return response()->json([
                 'message'=>'ha ocurrido un error inesperado al actualizar los datos, intentelo mas tarde',
                 'error'=>$th->getMessage(),
@@ -220,7 +222,8 @@ class ProveedorController extends Controller
                     'status' => Response::HTTP_NOT_FOUND
                 ]);
             }
-            $provider->delete();
+            $provider->estado = false; // Cambiar estado a false en lugar de eliminar
+            $provider->save();
 
             DB::commit();
             return response()->json([

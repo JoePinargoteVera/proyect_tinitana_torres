@@ -1,6 +1,6 @@
 
 
-<div class="barra">
+<div class="barra ">
     Inventario
 </div>
 
@@ -8,13 +8,13 @@
     
     <div class="row flex-nowrap">
         
-        <div class="col-auto col-md-3 col-xl-2  bg-dark w-100">
+        <div class="col-auto col-md-3 col-xl-2  bg-dark w-100"> <!-- -->
             
             <div class="d-flex flex-column align-items-center align-items-sm-start pt-2 text-white min-vh-100 w-100">
 
                 <figure class="full-width navLateral-body-tittle-menu">
                     <div>
-                        <img [src]="user.imagen ? user.imagen : '../../../assets/avatar.png'" alt="{{user.name}}" width="85" height="80" class="rounded-circle">
+                        <img [src]="user.imagen ? user.imagen : '../../../assets/avatar.png'" alt="{{user.name}}" width="85" height="75" class="rounded-circle">
                     </div>
                     <figcaption>
                         <span>
@@ -39,7 +39,14 @@
                     </li>
                     <li class="divider-menu-h"></li>
                     <li class="nav-item w-100 hov">
-                        <a href="productos" class="nav-link px-0 align-middle" (click)="goProductos()">
+                        <a href="transaccion" class="nav-link px-0 align-middle" >
+                            <i class="fs-4 bi bi-receipt me-4 ms-5"></i>
+                             <span class="ms-1 d-none d-sm-inline">TRANSACCION</span> </a>
+                       
+                    </li>
+                    <li class="divider-menu-h"></li>
+                    <li class="nav-item w-100 hov">
+                        <a href="productos" class="nav-link px-0 align-middle" >
                             <i class="fs-4 bi-table me-4 ms-5"></i> <span class="ms-1 d-none d-sm-inline">PRODUCTOS</span></a>
                     </li>
                     <li class="divider-menu-h"></li>

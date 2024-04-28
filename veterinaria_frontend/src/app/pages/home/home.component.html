@@ -1,16 +1,16 @@
-<h1>home</h1>
-
-<div id="chart">
-  <apx-chart
-    [series]="chartOptions.series"
-    [chart]="chartOptions.chart"
-    [xaxis]="chartOptions.xaxis"
-    [stroke]="chartOptions.stroke"
-    [tooltip]="chartOptions.tooltip"
-    [dataLabels]="chartOptions.dataLabels"
-    [legend]="chartOptions.legend"
-    [markers]="chartOptions.markers"
-    [grid]="chartOptions.grid"
-    [title]="chartOptions.title"
-  ></apx-chart>
+<div class="container">
+    <div class="card">
+        <div class="card-header">
+            <h5 class="card-title">Panel de Información</h5>
+        </div>
+        <div class="card-body">
+            <div *ngIf="clientesList.length > 0">
+                <div>
+                    <h6>Cantidad de Clientes Registrados:</h6>
+                    <p>{{ cantidadClientes }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+

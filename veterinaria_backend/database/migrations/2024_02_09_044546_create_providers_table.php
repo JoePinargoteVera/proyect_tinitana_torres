@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('razon_social')->nullable();
             $table->string('imagen')->nullable();
+            $table->boolean('estado')->default(true);
             $table->date('fecha_inicio_negocios')->nullable();
             $table->timestamps();
         });

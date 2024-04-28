@@ -13,12 +13,13 @@ return new class extends Migration
     {
         Schema::create('transaction_details', function (Blueprint $table) {
             $table->id();
+            $table->integer('cantidad')->default(1);
+            $table->decimal('total',10,2);
+            $table->boolean('estado')->default(true);
             $table->unsignedBigInteger('transaccion_id');
             $table->foreign('transaccion_id')->references('id')->on('transactions');
             $table->unsignedBigInteger('producto_id');
             $table->foreign('producto_id')->references('id')->on('products');
-            $table->integer('cantidad')->default(1);
-            $table->decimal('total',10,2);
             $table->timestamps();
         });
     }

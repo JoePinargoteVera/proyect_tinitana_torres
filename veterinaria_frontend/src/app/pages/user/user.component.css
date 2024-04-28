@@ -4,12 +4,12 @@
     text-decoration: none;
     cursor: pointer;
     padding: 0.5rem 1rem;
-    margin-right: 1rem;
+    /* margin-right: 1rem; */
     position: relative;
   }
 
-.btn:hover {
-    background: linear-gradient(to bottom, #ff6600 0%, #ffcc33 100%);
+  .btn:hover {
+    background: linear-gradient(to bottom, #9fd1fb 0%, #2e6da4 100%);
   }
   
   .btn.selected::after {
@@ -19,8 +19,23 @@
     left: 0;
     width: 100%;
     height: 4px;
-    background-color: #ff6600;
+    background-color: #2e6da4;
   }
+
+
+  .form-control{
+    background-color: transparent;
+    border: none;
+  }
+
+  .form-control:focus {
+    box-shadow: none;
+}
+
+
+.form-select:focus{
+  box-shadow: none;
+}
 
   .image-container {
     display: flex;

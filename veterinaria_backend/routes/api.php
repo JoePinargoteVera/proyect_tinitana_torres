@@ -46,8 +46,8 @@ Route::controller(ClienteController::class)->middleware('jwt.verified')->prefix(
 Route::controller(ProductoController::class)->middleware('jwt.verified')->prefix('producto')->middleware('jwt.verified')->group(function(){// 
     
     Route::post('crear','RegistroProductos');
-    Route::delete('eliminar','EliminarProducto');
-    Route::put('actualizar','ActualizarProducto');
+    Route::put('eliminar','EliminarProducto');
+    Route::patch('actualizar','ActualizarProducto');
     Route::get('ver','ObtenerProducto');
     Route::get('listar','ObtenerProductos');
     Route::get('buscar','BuscarProductos');
@@ -82,7 +82,7 @@ Route::controller(TransaccionController::class)->middleware('jwt.verified')->pre
     // Route::delete('eliminar','EliminarCategoria');
     // Route::put('actualizar','ActualizarCategoria');
     // Route::get('ver','ObtenerCategoria');
-    // Route::get('listar','ObtenerCategorias');
+    Route::get('lista_clientes','verTransaccionPorCliente');
     // Route::get('buscar','BuscarCategorias');
 
 });
@@ -98,7 +98,7 @@ Route::controller(UserController::class)->middleware('jwt.verified')->prefix('us
 
 });
 
-Route::controller(FacturaController::class)->middleware('jwt.verified')->prefix('factura')->group(function(){//->middleware('jwt.verified') 
+Route::controller(FacturaController::class)->prefix('factura')->group(function(){//->middleware('jwt.verified') 
     
     Route::post('crear','GenerarFactura');
     Route::delete('eliminar','EliminarCategoria');
@@ -106,5 +106,6 @@ Route::controller(FacturaController::class)->middleware('jwt.verified')->prefix(
     Route::get('ver','ObtenerFactura');
     Route::get('listar','ObtenerFacturas');
     Route::get('buscar','BuscarFacturas');
+    Route::get('enviar','enviarFactura');
 
 });

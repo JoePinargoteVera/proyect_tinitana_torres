@@ -1,73 +1,105 @@
 <div class="mt-5 ">
-    <div class="row justify-content-center border-bottom border-2 w-100">
-      <div class="col-auto">
-        <button  class="btn" [class.selected]="addCategory" (click)="showAddCategoryForm()">NUEVO</button>
-        <button  class="btn" [class.selected]="!addCategory" (click)="showListCategories()">VER</button>
-      </div>
+  <div class="row justify-content-center border-bottom border-2 w-100">
+    <div class="col-auto">
+      <button class="btn rounded-0" [class.selected]="addCategory" (click)="showAddCategoryForm()">NUEVO</button>
+      <button class="btn rounded-0" [class.selected]="!addCategory" (click)="showListCategories()">VER</button>
     </div>
-    <div *ngIf="addCategory" class="mt-3" id="">
-      <div class="container">
-        <h2 class="mt-5 ms-4">Agregar Nueva Categoría </h2>
-        <form>
-          <div class="mb-3">
-            <label for="nombre" class="form-label">Nombre</label> <!--[ngModel]="producto.nombre"-->
-            <input type="text" class="form-control" name="nombres" [(ngModel)]="category.nombre"  placeholder="ingrese el nombre" required>
-          </div>
+  </div>
 
-          <div class="mb-3">
-            <label for="descripcion" class="form-label">Descripción:</label>
-            <textarea id="descripcion" name="descripcion" rows="4" class="form-control" [(ngModel)]="category.descripcion" ></textarea>
+
+  <div *ngIf="addCategory" class="mt-3">
+    <div class="container">
+
+      <div class=" text-white text-center"
+        style="background-color: #2e6da4; height: 45px; font-size: 20px; line-height: 45px;">
+        Nueva Categoría
+      </div>
+
+      <form>
+
+        <div class="mt-2 mb-3">
+          <i class="bi bi-pencil-square"></i> INFORMACION BASICA
         </div>
-          
-          <button type="submit" class="btn btn-primary" (click)="crearCategoria()">Agregar Proveedor</button>
-        </form>
-      </div>
-      
+
+        <div class="row mb-2">
+          <div class="col-md-6">
+            <div class="mb-3 border-bottom border-2 form-floating">
+              <input type="text" id="nombres" class="form-control" placeholder="nombre" name="nombre"
+                [(ngModel)]="category.nombre" required>
+              <label for="nombres">Nombre</label>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="mb-3">
+          <div class="mt-2 mb-3">
+            <i class="bi bi-pencil-square"></i> DESCRIPCION
+          </div>
+          <textarea class="form-control bg-light rounded-0" placeholder="Deje su descripcion aquí..." id="floatingTextarea"
+            style="height: 100px" name="descripcion" [(ngModel)]="category.descripcion"></textarea>
+        </div>
+
+        <div class=" text-center">
+          <button type="submit" class="btn btn-primary mb-5 align-self-end rounded-5" (click)="crearCategoria()"
+            [disabled]="loading">
+            <span><i class="bi bi-person-plus"> crear categoria </i></span>
+            <span *ngIf="loading"><i class="spinner-border spinner-border-sm" role="status"
+                aria-hidden="true"></i></span>
+          </button>
+        </div>
+
+      </form>
+      <hr>
     </div>
-  
-  
-    <div *ngIf="listCategory" class="mt-3">
-      <h2 class="mt-5 ms-4">Ver Categorías </h2>
-  
-      <div class="container"> 
-          <div class="container mt-5">
-              <div class="row">
-                  <div class="col">
-                      <div class="input-group mb-3">
-                          <input type="text" class="form-control" [(ngModel)]="filtro" (input)="buscarCategorias()" placeholder="Buscar categorias">
-                          <button class="btn btn-primary" type="button" (click)="buscarCategorias()">Buscar</button>
-                      </div>
-                  </div>
-              </div>
-          </div>
-          
-          <div class="d-flex flex-wrap">
-              <div class="card w-25 mb-3 me-1" *ngFor="let categoria of categoryList">
-                  <!-- <div class="m-2">
-                      <img src="https://github.com/mdo.png" class="card-img-top img-fluid" alt="Producto">
-                  </div> -->
-                  <div class="card-body">
-                      <h5 class="card-title">{{categoria.nombre}}</h5>
 
-                  </div>
-                  <div class="card-footer d-flex justify-content-between align-items-center">
-                      <h5 class="card-text">{{categoria.descripcion}} $</h5>
-                      <div class="dropdown">
-                          <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                              <i class="bi bi-three-dots"></i>
-                          </button>
-                          <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                              <li><a class="dropdown-item" href="#">ver</a></li>
-                              <li><a class="dropdown-item" href="#">Eliminar</a></li>
-                          </ul>
-                      </div>
-                  </div>
-              </div>
-          </div>
+  </div>
+
+
+  <div *ngIf="listCategory" class="mt-3">
+    <div class="container">
+
+      <div class=" text-white text-center"
+        style="background-color: #4cbb90; height: 45px; font-size: 20px; line-height: 45px;">
+        Lista de Categorias
       </div>
-  </div>
-  
-  </div>
-  
-  
+      <div class="container mt-3">
+        <div class="row">
+          <div class="col">
+            <div class="input-group  w-50 mb-3">
+              <div class="border-bottom border-2">
+                <input type="text" class="form-control" [(ngModel)]="filtro" (input)="buscarCategorias()"
+                  placeholder="Buscar categoria">
+              </div>
 
+              <button class="btn" type="button" (click)="buscarCategorias()"><i class="bi bi-search"></i></button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="container mt-3">
+        <ul class="list-group mb-1 me-1" *ngFor="let category of categoryList">
+          <li class="list-group-item d-flex justify-content-between align-items-center bg-light">
+            <div>
+              <div>{{ category.nombre }}</div>
+
+            </div>
+            <div class="dropdown">
+              <button class="btn" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="bi bi-three-dots"></i>
+              </button>
+              <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <li><a class="dropdown-item" href="#">Editar</a></li>
+                <li><a class="dropdown-item" href="#">Eliminar</a></li>
+              </ul>
+            </div>
+          </li>
+
+        </ul>
+
+      </div>
+    </div>
+  </div>
+
+</div>

@@ -1,45 +1,99 @@
 <div class="mt-5 ">
-    <div class="row justify-content-center border-bottom border-2 w-100">
-      <div class="col-auto">
-        <button  class="btn" [class.selected]="addUser" (click)="showAddUserForm()">NUEVO</button>
-        <button  class="btn" [class.selected]="!addUser" (click)="showListUsers()">VER</button>
-      </div>
+  <div class="row justify-content-center border-bottom border-2 w-100">
+    <div class="col-auto">
+      <button class="btn rounded-0" [class.selected]="addUser" (click)="showAddUserForm()">NUEVO</button>
+      <button class="btn rounded-0" [class.selected]="!addUser" (click)="showListUsers()">VER</button>
     </div>
-    <div *ngIf="addUser" class="mt-3" id="">
-      <div class="container">
-        <h2 class="mt-5 ms-4">Agregar Nuevo usuario</h2>
-        <form>
-          <div class="mb-3">
-            <label for="nombre" class="form-label">Nombres</label> <!--[ngModel]="producto.nombre"-->
-            <input type="text" class="form-control" name="nombres" [(ngModel)]="user.name"  placeholder="ingrese el/los nombres" required>
+  </div>
+
+
+
+  <div *ngIf="addUser" class="mt-3">
+    <div class="container">
+
+      <div class=" text-white text-center"
+        style="background-color: #2e6da4; height: 45px; font-size: 20px; line-height: 45px;">
+        Nuevo Usuario
+      </div>
+
+      <form>
+
+        <div class="mt-2 mb-3">
+          <i class="bi bi-pencil-square"></i> INFORMACION BASICA
+        </div>
+
+        <div class="row mb-2">
+          <div class="col-md-6">
+            <div class="mb-3 border-bottom border-2 form-floating">
+              <input type="text" id="nombres" class="form-control " placeholder="nombres" name="nombres"
+                [(ngModel)]="user.nombres" required>
+              <label for="nombres">Nombres</label>
+            </div>
           </div>
-          
-          <div class="mb-3">
-            <label for="email" class="form-label">Correo Electronico (email)</label>
-            <input type="email" step="0.01" class="form-control" name="email" [(ngModel)]="user.email" placeholder="ingrese el email" required>
+          <div class="col-md-6">
+            <div class="mb-3 border-bottom border-2 form-floating form-floating-label-disabled-color:">
+              <input type="text" id="apellidos" class="form-control " name="apellidos" [(ngModel)]="user.apellidos"
+                placeholder="Ingrese los apellidos" required autocomplete="name">
+              <label for="apellidos">Apellidos</label>
+            </div>
           </div>
-          <div class="mb-3">
-            <label for="direccion" class="form-label">Dirección</label>
-            <input type="text" class="form-control" name="direccion" [(ngModel)]="user.direccion" placeholder="ingrese la direccion">
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <div class="mb-3 border-bottom border-2 form-floating">
+              <input type="text" id="cedula" class="form-control" name="cedula" [(ngModel)]="user.cedula"
+                placeholder="Ingrese el costo" required>
+              <label for="cedula" class="form-label">Cedula</label>
+            </div>
           </div>
-          <div class="mb-3">
-            <label for="telefono_uno" class="form-label">telefono</label>
-            <input type="tel" class="form-control" name="telefono" [(ngModel)]="user.telefono" placeholder="Ingrese el telefono principal">
+          <div class="col-md-6 ">
+            <div class="mb-3 border-bottom border-2 form-floating">
+              <input type="text" class="form-control" id="name" name="name" [(ngModel)]="user.name" placeholder="name"
+                required>
+              <label for="name" class="form-label">Usuario</label>
+            </div>
           </div>
-          <div class="mb-3">
-            <label for="passworf" class="form-label">password</label>
-            <input type="password" class="form-control" name="password" [(ngModel)]="user.password" placeholder="Ingrese el telefono secundario">
+        </div>
+
+        <!--  -->
+
+        <div class="mb-3">
+          <i class="bi bi-pencil-square"></i> INFORMACION DE CONTACTO
+        </div>
+        <div class="row mb-3">
+          <div class="col-md-4">
+            <div class="mb-3 border-bottom border-2 form-floating">
+              <input type="text" class="form-control" id="direccion" name="direccion" placeholder="direccion"
+                [(ngModel)]="user.direccion">
+              <label for="direccion">Dirección</label>
+            </div>
           </div>
 
-          <div class="mb-3">
-            <label for="imagen" class="form-label">imagen</label>
-            <input type="file" accept=".jpg, .png, jepg" class="form-control" multiple (change)="cargarImagen($event)">
-            <!-- <input type="file" class="form-control" name="imagen" (change)="onFileSelected($event)" accept="image/*" placeholder="Ingrese una imagen"> -->
+          <div class="col-md-4">
+            <div class="mb-3 border-bottom border-2 form-floating">
+              <input type="text" class="form-control" id="telefono_uno" placeholder="telefono uno" name="telefono_uno"
+                [(ngModel)]="user.telefono">
+              <label for="telefono_uno">Telefono</label>
+            </div>
           </div>
 
-          <div class="mb-3">
-            <label for="genero" class="form-label">rol</label>
-            <select class="form-select"  name="genero"  [(ngModel)]="user.rol" >
+          <div class="col-md-4 ">
+            <div class="mb-3 border-bottom border-2 form-floating">
+              <input type="text" class="form-control" id="email" name="email" [(ngModel)]="user.email"
+                placeholder="email" required>
+              <label for="email" class="form-label">Email</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <i class="bi bi-pencil-square "></i> Administracion
+        </div>
+        <div class="row">
+          <div class="mb-3 col-md-6 d-flex align-items-center">
+            <label for="rol" class="form-label me-2">rol </label>
+            <select class="form-select flex-grow-1" id="rol" name="rol" [(ngModel)]="user.rol">
               <option selected disabled>Seleccione el genero</option>
               <option value="administrador">Administrador</option>
               <option value="usuario">Usuario</option>
@@ -47,57 +101,81 @@
               <option value="gerente">Gerente</option>
             </select>
           </div>
-          <button type="submit" class="btn btn-primary" (click)="crearUsuario()">Agregar Cliente</button>
-        </form>
-      </div>
-      
+
+
+          <div class="mb-3 col-md-6 d-flex align-items-center">
+            <!-- <label for="imagen" class="form-label">imagen</label> -->
+            <input type="file" accept=".jpg, .png, jepg" placeholder="foto de perfil" class="form-control" multiple
+              (change)="cargarImagen($event)">
+          </div>
+
+        </div>
+
+        <div class=" text-center">
+          <button type="submit" class="btn btn-primary mb-5 align-self-end rounded-5" (click)="crearUsuario()"
+            [disabled]="loading">
+            <span><i class="bi bi-person-plus"> crear usuario </i></span>
+            <span *ngIf="loading"><i class="spinner-border spinner-border-sm" role="status"
+                aria-hidden="true"></i></span>
+          </button>
+        </div>
+
+      </form>
+      <hr>
     </div>
-  
-  
-    <div *ngIf="listUser" class="mt-3">
-      <h2 class="mt-5 ms-4">Ver usuario</h2>
-  
-      <div class="container"> 
-          <div class="container mt-5">
-              <div class="row">
-                  <div class="col">
-                      <div class="input-group mb-3">
-                          <input type="text" class="form-control" [(ngModel)]="filtro" (input)="buscarUsuarios()" placeholder="Buscar clientes">
-                          <button class="btn btn-primary" type="button" (click)="buscarUsuarios()">Buscar usuarios</button>
-                      </div>
-                  </div>
-              </div>
-          </div>
-          <!-- d-flex flex-wrap card-img-top img-fluid-->
-          <div class="image-container">
-              <div class="card image-column mb-3 me-1" *ngFor="let user of userList">
-                  <div class="m-2 image-wrapper">
-                      <img [src]="user.imagen ? (user.imagen) : '../../../assets/avatar.png'" class=" image" alt="usuario">
-                  </div>
-                  <div class="card-body">
-                      <h5 class="card-title">{{user.name}}</h5>
-                      <h6>{{user.email}}</h6>
-                      <h6>{{user.rol}}</h6>
-                      <!-- <p class="card-text">{{user.email}}</p>
-                      <p class="card-text">{{user.rol}}</p> -->
-                  </div>
-                  <div class="card-footer d-flex justify-content-between align-items-center">
-                      <h5 class="card-text">{{user.telefono}} $</h5>
-                      <div class="dropdown">
-                          <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                              <i class="bi bi-three-dots"></i>
-                          </button>
-                          <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                              <li><a class="dropdown-item" href="#">Editar</a></li>
-                              <li><a class="dropdown-item" href="#">Eliminar</a></li>
-                          </ul>
-                      </div>
-                  </div>
-              </div>
-          </div>
+
+  </div>
+
+
+  <div *ngIf="listUser" class="mt-3">
+    
+
+    <div class="container">
+      <div class=" text-white text-center"
+        style="background-color: #4cbb90; height: 45px; font-size: 20px; line-height: 45px;">
+        lista de usuarios
       </div>
+      <div class="container mt-3">
+        <div class="row">
+          <div class="col">
+            <div class="input-group  w-50 mb-3">
+              <div class="border-bottom border-2">
+                <input type="text" class="form-control" [(ngModel)]="filtro" (input)="buscarUsuarios()"
+                  placeholder="Buscar usuarios">
+              </div>
+
+              <button class="btn" type="button" (click)="buscarUsuarios()"><i class="bi bi-search"></i></button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- d-flex flex-wrap card-img-top img-fluid-->
+      <div class="container mt-3">
+        <ul class="list-group mb-1 me-1" *ngFor="let user of userList">
+          <li class="list-group-item d-flex justify-content-between align-items-center bg-light">
+            <div>
+              <div>{{ user.name }} {{user.apellidos}}</div>
+              <div class="fw-lighter text-primary">{{user.telefono}}</div>
+
+            </div>
+            <div class="dropdown">
+              <button class="btn" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="bi bi-three-dots"></i>
+              </button>
+              <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <li><a class="dropdown-item" href="#">Editar</a></li>
+                <li><a class="dropdown-item" href="#">Eliminar</a></li>
+              </ul>
+            </div>
+          </li>
+
+        </ul>
+
+      </div>
+
+
+    </div>
   </div>
-  
-  </div>
-  
-  
+
+</div>
+

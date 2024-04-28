@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
+import { ToastrService } from 'ngx-toastr';
 import { catchError, tap } from 'rxjs';
 import { CategoryService } from 'src/app/Service/category.service';
-import { ImagenesService } from 'src/app/Service/imagenes.service';
 import { Category } from 'src/app/interface/icategory';
 
 @Component({
@@ -11,6 +11,7 @@ import { Category } from 'src/app/interface/icategory';
 })
 export class CategoryComponent {
 
+  loading:boolean = false
   addCategory:boolean=true
   listCategory:boolean=false
   errorMessage:string = ''
@@ -23,7 +24,7 @@ export class CategoryComponent {
     descripcion: ''
   }
 
-  constructor(private categoryService:CategoryService){
+  constructor(private categoryService:CategoryService, private toastr: ToastrService){
 
   }
 
@@ -55,16 +56,36 @@ export class CategoryComponent {
   }
 
   crearCategoria(){
-    console.log(this.category);
+    this.loading = true
     
     this.categoryService.crearCategoria(this.category).pipe(
       tap(data=>{
-        console.log(data.data);
-        this.succesMessage = data.message
+        this.loading = false
+        console.log(data);
+        
+
+        if (data.status == '422') {
+
+          const errors = data.validationError;
+
+          Object.keys(errors).forEach(key => {
+
+            const errorMessage = errors[key][0]
+            this.toastr.warning(errorMessage, 'Error')
+
+
+          });
+        } else if (data.status == '500') {
+          this.toastr.error(data.error, 'Error');
+        }else{
+          this.toastr.success(data.message, 'Exito');
+        }
+
       }),
       catchError(error =>{
-        this.errorMessage = error.error.message
-        return this.errorMessage
+        this.loading = false
+        // this.toastr.error(error.error.error, 'Error');
+        return error.error.message
       })
     ).subscribe()
   }

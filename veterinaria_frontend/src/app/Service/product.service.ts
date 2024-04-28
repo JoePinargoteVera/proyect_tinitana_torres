@@ -50,14 +50,14 @@ export class ProductService {
     const token = this.cookieService.get('token');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     const options = { headers: headers };
-    return this.http.put<IResProduct>(`${url}producto/actualizar`, body, options)
+    return this.http.patch<IResProduct>(`${url}producto/actualizar`, body, options)
   }
 
   eliminarProducto(id: number):Observable<IResProduct>{
     const token = this.cookieService.get('token');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     const options = { headers: headers };
-    return this.http.delete<IResProduct>(`${url}producto/eliminar?id=${id}`)
+    return this.http.put<IResProduct>(`${url}producto/eliminar`,{'id':id},options)
   }
 
 }

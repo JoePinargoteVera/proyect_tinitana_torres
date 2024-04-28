@@ -6,6 +6,7 @@ import { User } from 'src/app/interface/iuser';
 import { ImagenesService } from 'src/app/Service/imagenes.service';
 import 'firebase/storage'
 import { DomSanitizer } from '@angular/platform-browser';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-user',
@@ -14,10 +15,11 @@ import { DomSanitizer } from '@angular/platform-browser';
 })
 export class UserComponent {
 
- 
-  archivos:any
+
+  loading: boolean = false
+  archivos: any
   imagenes: any[] = [];
-  base64Image: string  = '';
+  base64Image: string = '';
   filtro: String = ''
   addUser: boolean = true
   listUser: boolean = false
@@ -32,16 +34,29 @@ export class UserComponent {
     imagen: null
   }
 
-  constructor(private userService: UserService, private imagenesService: ImagenesService, private sanitizer: DomSanitizer) { }
+  constructor(private userService: UserService, private imagenesService: ImagenesService,
+    private sanitizer: DomSanitizer, private toastr: ToastrService) { }
 
   getUrl(url: string) {
     return this.sanitizer.bypassSecurityTrustUrl(url);
   }
 
   cargarImagen(event: any) {
-    this.archivos = event.target.files;
+    let archivos = event.target.files;
+    for (let i = 0; i < archivos.length; i++) {
+      let reader = new FileReader();
 
-    
+      reader.readAsDataURL(archivos[i]);
+      reader.onloadend = () => {
+        console.log(reader.result);
+        this.imagenes.push(reader.result);
+        this.imagenesService.subirImagen('users/', this.user.name + Date.now(), reader.result).then(urlImagen => {
+          console.log(urlImagen);
+          this.user.imagen = urlImagen
+        });
+      };
+    }
+
 
   }
 
@@ -88,36 +103,42 @@ export class UserComponent {
   }
 
   crearUsuario() {
+    this.loading = true
 
-    for (let i = 0; i < this.archivos.length; i++) {
-      let reader = new FileReader();
+    this.userService.crearUsuario(this.user).pipe(
+      tap(data => {
 
-      reader.readAsDataURL(this.archivos[i]);
-      reader.onloadend = () => {
-        console.log(reader.result);
-        this.imagenes.push(reader.result);
-        this.imagenesService.subirImagen('images/' , this.user.name + Date.now(), reader.result).then(urlImagen => {
-          console.log(urlImagen);
-          this.user.imagen = urlImagen
-        });
-      };
-    }
+        this.loading = false
+        if (data.status == '422') {
 
-      this.userService.crearUsuario(this.user).pipe(
-        tap(data => {
-          this.succesMessage = data.message
-          console.log(data.data);
-          console.log(this.succesMessage);
-          
-        }),
-        catchError(error => {
-          this.errorMessage = error.error.message
-          console.log(error.error.error);
-          console.log(this.errorMessage);
-          
-          return this.errorMessage
-        })
-      ).subscribe()    
+          const errors = data.validationError;
+
+          Object.keys(errors).forEach(key => {
+
+            const errorMessage = errors[key][0]
+            this.toastr.warning(errorMessage, 'Error')
+
+
+          });
+        } else if (data.status == '500') {
+          this.toastr.error(data.error, 'Error');
+        } else {
+          this.toastr.success(data.message, 'Exito');
+        }
+        this.succesMessage = data.message
+
+
+
+
+      }),
+      catchError(error => {
+        this.errorMessage = error.error.message
+        this.loading = false
+        this.toastr.error(error.error.message, 'Error');
+
+        return this.errorMessage
+      })
+    ).subscribe()
 
   }
 

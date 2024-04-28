@@ -54,7 +54,7 @@ class TransaccionController extends Controller
             
             DB::commit();
             return response()->json([
-                'data' => $transaccion,
+                'transaccion' => $transaccion,
                 'message' => 'Transacción realizada con éxito',
                 'status' => Response::HTTP_CREATED
             ]);
@@ -64,6 +64,32 @@ class TransaccionController extends Controller
             return response()->json([
                 'error' => $th->getMessage(),
                 'message' => 'no se pudo realizar la transaccion',
+                'status' => Response::HTTP_INTERNAL_SERVER_ERROR
+            ]);
+        }
+    }
+
+    function verTransaccionPorCliente(Request $request) {
+        
+        try {
+            $transaccion = Transaction::where('cliente_id', $request->id)->get();
+            if ($transaccion->isEmpty()) {
+
+                return response()->json([
+                    'message' => 'no existe ningun transacciones para este cliente',
+                    'status' => Response::HTTP_NOT_FOUND
+                ]);
+            }
+
+            return response()->json([
+                'data' => $transaccion,
+                'message' => 'transacciones obtenidas con exito',
+                'status' => Response::HTTP_FOUND
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => 'no se pudo obtener la transaccion, intentelo nuevamente en unos minutos',
+                'error' => $th->getMessage(),
                 'status' => Response::HTTP_INTERNAL_SERVER_ERROR
             ]);
         }

@@ -14,6 +14,9 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
+            $table->string('nombres');
+            $table->string('apellidos');
+            $table->string('cedula',10)->unique();
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password')->min(8)->max(20);
@@ -21,6 +24,7 @@ return new class extends Migration
             $table->string('telefono')->nullable();
             $table->string('direccion')->nullable();
             $table->string('imagen')->nullable();
+            $table->boolean('estado')->default(true);
             $table->rememberToken();
             $table->timestamps();
         });

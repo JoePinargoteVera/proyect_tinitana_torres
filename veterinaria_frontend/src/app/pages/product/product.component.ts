@@ -18,9 +18,11 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class ProductComponent implements OnInit {
 
-  archivos: any
+  imagenUp:boolean = false
+  loading:boolean = false
   addProduct: boolean = true
   listProduct: boolean = false
+  edit:boolean = false
   errorMessage: string = ''
   succesMessage: string = ''
   filtro: string = ''
@@ -29,6 +31,8 @@ export class ProductComponent implements OnInit {
   proveedorList!: Provider[]
   categoriaList!: Category[]
   producto: any = {}
+
+  productoVer:any = {}
 
 
   constructor(private productService: ProductService, private providerService: ProviderService,
@@ -56,8 +60,23 @@ export class ProductComponent implements OnInit {
   }
 
   cargarImagen(event: any) {
-    this.archivos = event.target.files;
+    this.imagenUp = true
+    let archivos = event.target.files;
+    for (let i = 0; i < archivos.length; i++) {
+      let reader = new FileReader();
 
+      reader.readAsDataURL(archivos[i]);
+      reader.onloadend = () => {
+        console.log(reader.result);
+        this.imagenes.push(reader.result);
+        this.imagenesService.subirImagen('products/', this.producto.nombre, reader.result).then(urlImagen => {
+          console.log(urlImagen);
+          this.producto.imagen = urlImagen
+        });
+      };
+    }
+
+    this.imagenUp = false
 
 
   }
@@ -77,35 +96,37 @@ export class ProductComponent implements OnInit {
   }
 
   crearProductos() {
-    // if (this.archivos !== null) {
-    //   for (let i = 0; i < this.archivos.length; i++) {
-    //     let reader = new FileReader();
-
-    //     reader.readAsDataURL(this.archivos);
-    //     reader.onloadend = () => {
-    //       this.imagenes.push(reader.result);
-    //       this.imagenesService.subirImagen('images/', this.producto.nombre, reader.result).then(urlImagen => {
-    //         console.log(urlImagen);
-    //         this.producto.imagen = urlImagen
-    //       });
-    //     };
-    //   }
-    // }
-
-      console.log(this.producto);
-
+    this.loading = true
+    
     this.productService.crearProducto(this.producto).pipe(
       tap(data => {
         console.log(data);
-        // this.succesMessage = 
+        
+        this.loading = false
 
         
-        this.toastr.success(data.error, 'Éxito');
+        if (data.status == '422') {
+
+          const errors = data.validationError;
+
+          Object.keys(errors).forEach(key => {
+
+            const errorMessage = errors[key][0]
+            this.toastr.error(errorMessage, 'Error')
+
+
+          });
+        } else if (data.status == '500') {
+          this.toastr.error(data.message, 'Error');
+        }else{
+          this.toastr.success(data.message, 'Exito');
+        }
       }),
       catchError(error => {
-        this.errorMessage = error.error.message
-        this.toastr.error(this.errorMessage, 'Error');
-        return this.errorMessage
+        this.loading = false;
+        this.toastr.error(error.error.message, 'Error');
+        
+        return error.error.message
       })
     ).subscribe()
     
@@ -154,4 +175,79 @@ export class ProductComponent implements OnInit {
       })
     ).subscribe()
   }
+
+  eliminarProducto(id:number){
+    this.productService.eliminarProducto(id).pipe(
+      tap(data=>{
+        if (data.status == '404') {
+
+            this.toastr.error(data.message, 'Error')
+
+
+
+        } else if (data.status == '500') {
+          this.toastr.error(data.message, 'Error');
+        }else{
+          this.obtenerProductos()
+          this.toastr.success(data.message, 'Exito');
+          
+        }
+
+        
+      }),
+      catchError(error =>{
+        this.toastr.error(error.error.message, 'Error');
+        return error.error.message
+      })
+    ).subscribe()
+  }
+
+ actualizarProducto(){
+  console.log(this.productoVer);
+  
+  this.productService.actualizarProducto(this.productoVer).pipe(
+    tap(data =>{
+      console.log(data);
+      
+
+      if (data.status == '422') {
+
+        const errors = data.validationError;
+
+        Object.keys(errors).forEach(key => {
+
+          const errorMessage = errors[key][0]
+          this.toastr.error(errorMessage, 'Error')
+
+
+        });
+      } else if (data.status == '500' || data.status == '404') {
+        this.toastr.error(data.message, 'Error');
+      }else{
+        this.toastr.success(data.message, 'Exito');
+        this.obtenerProductos()
+        this.edit = false
+      }
+    }),
+    catchError(error=>{
+      return error.error.message
+    })
+  ).subscribe()
+  
+}
+
+  asignarProducto(producto:any){
+    this.productoVer = producto
+    
+  }
+
+  editar(){
+    this.edit = true
+  }
+
+  cancelarEditar(){
+    this.edit = false
+  }
+
+
 }
