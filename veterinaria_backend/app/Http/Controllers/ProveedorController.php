@@ -114,6 +114,36 @@ class ProveedorController extends Controller
         }
     }
 
+    public function obtenerProductos(Request $request)
+    {
+        try {
+            // Buscar el proveedor por su ID
+            $proveedor = Provider::find($request->id);
+
+            if (!$proveedor) {
+                return response()->json([
+                    'message' => 'Proveedor no encontrado',
+                    'status' => Response::HTTP_NOT_FOUND
+                ]);
+            }
+
+            // Obtener los productos del proveedor
+            $productos = $proveedor->productos()->select('nombre')->get();
+
+            return response()->json([
+                'data' => $productos,
+                'message' => 'Productos encontrados',
+                'status' => Response::HTTP_OK
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'error' => $th->getMessage(),
+                'message' => 'no se pudo buscar a los productos, intentelo mas tarde o contacte con el proveedor',
+                'status' => Response::HTTP_OK
+            ]);
+        }
+    }
+
     public function BuscarProveedores(Request $request)
     {
 
@@ -125,7 +155,6 @@ class ProveedorController extends Controller
                     ->orWhere('ruc', 'regexp', "/$filtro/i")
                     ->orWhere('nombre', 'regexp', "/$filtro/i")
                     ->orWhere('razon_social', 'regexp', "/$filtro/i");
-                    
             })->get();
 
 
@@ -171,7 +200,6 @@ class ProveedorController extends Controller
                 'telefono_dos' => 'sometimes|nullable|string|max:20',
                 'direccion' => 'sometimes|string|max:255'
             ]);
-
         } catch (ValidationException $e) {
 
             return response()->json([
@@ -202,9 +230,9 @@ class ProveedorController extends Controller
         } catch (\Throwable $th) {
             DB::rollBack();
             return response()->json([
-                'message'=>'ha ocurrido un error inesperado al actualizar los datos, intentelo mas tarde',
-                'error'=>$th->getMessage(),
-                'status'=>Response::HTTP_INTERNAL_SERVER_ERROR
+                'message' => 'ha ocurrido un error inesperado al actualizar los datos, intentelo mas tarde',
+                'error' => $th->getMessage(),
+                'status' => Response::HTTP_INTERNAL_SERVER_ERROR
             ]);
         }
     }

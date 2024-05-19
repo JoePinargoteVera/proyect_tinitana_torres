@@ -173,6 +173,47 @@ class ProductoController extends Controller
         }
     }
 
+    function añadirStock(Request $request) {
+        DB::beginTransaction();
+        try {
+            $producto = Product::where('id', $request->id)->increment('stock', $request->cantidad);
+
+            DB::commit();
+            return response()->json([
+                'data'=> $producto,
+                'message'=>'stock incrementado con exito',
+                'status'=>Response::HTTP_OK
+            ]);
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return response()->json([
+                'message'=>'no se pudo incrementar el stock',
+                'error'=>$th->getMessage(),
+                'status'=>Response::HTTP_INTERNAL_SERVER_ERROR
+            ]);
+        }
+    }
+
+    function quitarStock(Request $request) {
+        DB::beginTransaction();
+        try {
+            Product::where('id', $request->id)->decrement('stock', $request->cantidad);
+
+            DB::commit();
+            return response()->json([
+                'message'=>'stock decrementado con exito',
+                'status'=>Response::HTTP_OK
+            ]);
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return response()->json([
+                'message'=>'no se pudo decrementar el stock',
+                'error'=>$th->getMessage(),
+                'status'=>Response::HTTP_INTERNAL_SERVER_ERROR
+            ]);
+        }
+    }
+
     public function ActualizarProducto(Request $request)
     {
         try {

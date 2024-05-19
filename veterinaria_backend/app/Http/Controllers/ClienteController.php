@@ -35,6 +35,13 @@ class ClienteController extends Controller
             ]);
         }
 
+        
+        $clienteBuscar = Client::where('cedula', $request->cedula)->first();
+
+        if ($clienteBuscar) {
+            # code...
+        }
+
         DB::beginTransaction();
         try {
             $cliente = new Client();

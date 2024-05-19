@@ -257,14 +257,14 @@ class FacturaController extends Controller
                 ]);
             }
 
-            // Mail::to($email)
-            //     ->send(new MailBill($contenidoPDF, $datosFactura));
+            Mail::to($email)
+                ->send(new MailBill($contenidoPDF, $datosFactura));
 
             // Guardar el PDF en el servidor (opcional)
             $pdfPath = storage_path('app/public/facturas/factura.pdf');
             file_put_contents($pdfPath, $contenidoPDF);
 
-            return view('factura')->with('datosFactura',$datosFactura);
+            // return view('factura')->with('datosFactura',$datosFactura);
 
             return response()->json([
                 'data' => $datosFactura,
@@ -332,6 +332,7 @@ class FacturaController extends Controller
         try {
 
             $id = $request->id;
+            $pdfFile = $request->file('pdfFile');
 
             $datosFactura = Bill::with([
                 'transaccion' => function ($query) {
@@ -360,24 +361,24 @@ class FacturaController extends Controller
             }
 
 
-            $opciones = new Options();
-            $opciones->set('isPhpEnabled', true);
-            $opciones->set('isHtml5ParserEnabled', true);
-            $opciones->set('isRemoteEnabled', true);
+            // $opciones = new Options();
+            // $opciones->set('isPhpEnabled', true);
+            // $opciones->set('isHtml5ParserEnabled', true);
+            // $opciones->set('isRemoteEnabled', true);
 
-            $dompdf = new Dompdf($opciones);
+            // $dompdf = new Dompdf($opciones);
 
-            $view = view('factura');
-            $view->with('datosFactura', $datosFactura);
-            $contenidoHTML = $view->render();
+            // $view = view('factura');
+            // $view->with('datosFactura', $datosFactura);
+            // $contenidoHTML = $view->render();
 
-            $dompdf->loadHtml($contenidoHTML);
+            // $dompdf->loadHtml($contenidoHTML);
 
-            // Renderizar el PDF
-            $dompdf->render();
+            // // Renderizar el PDF
+            // $dompdf->render();
 
-            // Obtener el contenido del PDF como una cadena
-            $contenidoPDF = $dompdf->output();
+            // // Obtener el contenido del PDF como una cadena
+            // $contenidoPDF = $dompdf->output();
 
             if ($datosFactura->transaccion->client) {
                 $email = $datosFactura->transaccion->client->email;
@@ -387,18 +388,26 @@ class FacturaController extends Controller
                     'status' => Response::HTTP_BAD_REQUEST
                 ]);
             }
+            $cliente = $datosFactura->transaccion->client;
+            Mail::raw('Adjunto encontrarás el PDF', function ($message) use ($pdfFile, $cliente) {
+                $message->to($cliente->email)
+                        ->subject('PDF para ' . $cliente->nombres)
+                        ->attach($pdfFile->getRealPath(), [
+                            'as' => $pdfFile->getClientOriginalName(),
+                            'mime' => $pdfFile->getClientMimeType(),
+                        ]);
+            });
 
             // Mail::to($email)
             //     ->send(new MailBill($contenidoPDF, $datosFactura));
 
             // Guardar el PDF en el servidor (opcional)
-            $pdfPath = storage_path('app/public/facturas/factura.pdf');
-            file_put_contents($pdfPath, $contenidoPDF);
+            // $pdfPath = storage_path('app/public/facturas/factura.pdf');
+            // file_put_contents($pdfPath, $contenidoPDF);
 
-            return view('factura')->with('datosFactura',$datosFactura);
+            // return view('factura')->with('datosFactura',$datosFactura);
 
             return response()->json([
-                'data' => $datosFactura,
                 'message' => 'factura enviada con exito',
                 'status' => Response::HTTP_FOUND
             ]);

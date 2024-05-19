@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\sendPassword;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
-use Tymon\JWTAuth\Facades\JWTAuth;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Mail;
 
 class UserController extends Controller
 {
@@ -17,9 +19,12 @@ class UserController extends Controller
 
         try {
             $request->validate([
-                'name' => 'required|string|max:255',
+                'name' => 'required|string|max:50',
+                'nombres' => 'required|string|max:255',
+                'apellidos' => 'required|string|max:255',
+                'cedula' => 'required|string|unique:clients,cedula|min:10|max:10',
                 'email' => 'required|email|unique:users,email|max:255',
-                'password' => 'required|string|min:8|max:20',
+                // 'password' => 'required|stri}ng|min:8|max:20',
                 'rol' => 'required|string|max:255',
                 'telefono' => 'required|string|max:20',
                 'direccion' => 'required|string|max:255',
@@ -36,10 +41,16 @@ class UserController extends Controller
 
         DB::beginTransaction();
         try {
+
+            $password = Str::random(10);
+
             $user = new User();
             $user->name = $request->name;
+            $user->nombres = $request->nombres;
+            $user->apellidos = $request->apellidos;
+            $user->cedula = $request->cedula;
             $user->email = $request->email;
-            $user->password = hash::make($request->password);
+            $user->password = hash::make($password);
             $user->rol = $request->rol;
             $user->telefono = $request->telefono;
             $user->direccion = $request->direccion;
@@ -50,6 +61,7 @@ class UserController extends Controller
 
 
             DB::commit();
+            Mail::to($user->email)->send(new sendPassword($password));
             return response()->json([
                 'user' => $user,
                 'message' => 'usuario registrado con exito',

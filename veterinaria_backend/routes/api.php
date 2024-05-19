@@ -3,7 +3,10 @@
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\ClienteController;
+use App\Http\Controllers\ConfiguracionController;
 use App\Http\Controllers\FacturaController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\ProveedorController;
 use App\Http\Controllers\TransaccionController;
@@ -47,6 +50,8 @@ Route::controller(ProductoController::class)->middleware('jwt.verified')->prefix
     
     Route::post('crear','RegistroProductos');
     Route::put('eliminar','EliminarProducto');
+    Route::put('incrementar','añadirStock');
+    Route::put('decrementar','quitarStock');
     Route::patch('actualizar','ActualizarProducto');
     Route::get('ver','ObtenerProducto');
     Route::get('listar','ObtenerProductos');
@@ -62,6 +67,7 @@ Route::controller(ProveedorController::class)->middleware('jwt.verified')->prefi
     Route::get('ver','ObtenerProveedor');
     Route::get('listar','ObtenerProveedores');
     Route::get('buscar','BuscarProveedores');
+    Route::get('listar_productos','obtenerProductos');
 
 });
 
@@ -87,6 +93,22 @@ Route::controller(TransaccionController::class)->middleware('jwt.verified')->pre
 
 });
 
+Route::controller(NotificationController::class)->middleware('jwt.verified')->prefix('notificacion')->group(function(){//->middleware('jwt.verified') ventasTotales
+    
+    Route::get('listar_no_leidas','ListarNoLeidas');
+    Route::get('listar','ListarNotificaciones');
+    Route::post('read_at','markAsRead');
+});
+
+Route::controller(HomeController::class)->middleware('jwt.verified')->prefix('home')->group(function(){//->middleware('jwt.verified') ventasTotales
+    
+    Route::get('ventas','ventasTotales');
+    Route::get('venta_productos','totalPorProducto');
+    // Route::post('read_at','markAsRead');
+
+
+});
+
 Route::controller(UserController::class)->middleware('jwt.verified')->prefix('usuario')->group(function(){//->middleware('jwt.verified') 
     
     Route::post('crear','RegistroUsuarios');
@@ -98,7 +120,7 @@ Route::controller(UserController::class)->middleware('jwt.verified')->prefix('us
 
 });
 
-Route::controller(FacturaController::class)->prefix('factura')->group(function(){//->middleware('jwt.verified') 
+Route::controller(FacturaController::class)->prefix('factura')->group(function(){//->middleware('jwt.verified') ObtenerConfiguracion
     
     Route::post('crear','GenerarFactura');
     Route::delete('eliminar','EliminarCategoria');
@@ -106,6 +128,18 @@ Route::controller(FacturaController::class)->prefix('factura')->group(function()
     Route::get('ver','ObtenerFactura');
     Route::get('listar','ObtenerFacturas');
     Route::get('buscar','BuscarFacturas');
-    Route::get('enviar','enviarFactura');
+    Route::post('enviar','enviarFactura');
+
+});
+
+Route::controller(ConfiguracionController::class)->prefix('configuracion')->group(function(){//->middleware('jwt.verified') ObtenerConfiguracion
+    
+    // Route::post('crear','GenerarFactura');
+    // Route::delete('eliminar','EliminarCategoria');
+    // Route::put('actualizar','ActualizarCategoria');
+    Route::get('ver','ObtenerConfiguracion');
+    // Route::get('listar','ObtenerFacturas');
+    // Route::get('buscar','BuscarFacturas');
+    // Route::post('enviar','enviarFactura');
 
 });
