@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { OverlayScrollbarsComponent } from "overlayscrollbars-ngx";
 
 @Component({
   selector: 'app-root',
@@ -10,6 +11,7 @@ export class AppComponent {
   showNavbar:boolean = true
 
   isCollapsed: boolean = false;
+  
 
   toggleSidebar() {
     this.isCollapsed = !this.isCollapsed;

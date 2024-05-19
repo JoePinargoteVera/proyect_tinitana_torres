@@ -11,6 +11,9 @@ import { User } from 'src/app/interface/iuser';
 export class SidebarComponent {
 
   isCollapsed: boolean = false;
+  isClientsCollapsed: boolean = false;
+  isProductsCollapsed: boolean = false;
+  isConfigCollapsed: boolean = false;
   user!: User;
 
   constructor(private router: Router, private serviceStorage: ServiceStorage){

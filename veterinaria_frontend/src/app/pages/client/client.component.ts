@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { catchError, tap } from 'rxjs';
 import { ClientService } from 'src/app/Service/client.service';
 import { Client } from 'src/app/interface/iclient';
@@ -11,21 +11,25 @@ import { Transaction } from 'src/app/interface/itransaction';
   templateUrl: './client.component.html',
   styleUrls: ['./client.component.css']
 })
-export class ClientComponent {
+export class ClientComponent implements OnInit {
 
   loading: boolean = false
   filtro: String = ''
-  edit:boolean = false
-  addClient: boolean = true
-  listClient: boolean = false
+  edit: boolean = false
+  addClient: boolean = false
+  listClient: boolean = true
   errorMessage: string = ''
   succesMessage: string = ''
   clienteList!: Client[]
-  transacciones!:any[]
-  clienteAsignado: Client = {cedula: '',nombres: '',apellidos: '',email: '',estado: true}
-  cliente: Client = {cedula: '',nombres: '',apellidos: '',email: '',estado: true}
+  transacciones!: any[]
+  clienteClear: Client = { id: 0, cedula: '', nombres: '', apellidos: '', email: '', estado: true }
+  clienteAsignado: Client = { id: 0, cedula: '', nombres: '', apellidos: '', email: '', estado: true }
+  cliente: Client = { id: 0, cedula: '', nombres: '', apellidos: '', email: '', estado: true }
 
-  constructor(private clientService: ClientService, private transacService:TransactionService, private toastr: ToastrService) {
+  constructor(private clientService: ClientService, private transacService: TransactionService, private toastr: ToastrService) {
+  }
+  ngOnInit(): void {
+    this.obtenerClientes()
   }
 
   showAddClientForm() {
@@ -74,8 +78,8 @@ export class ClientComponent {
     this.loading = true;
     this.clientService.crearCliente(this.cliente).pipe(
       tap(data => {
- 
- 
+
+
         this.loading = false;
         // this.cliente  = {}
 
@@ -92,9 +96,11 @@ export class ClientComponent {
           });
         } else if (data.status == '500') {
           this.toastr.error(data.error, 'Error');
-        }else{
+        } else {
           this.toastr.success(data.message, 'Exito');
+          this.cliente = this.clienteClear
         }
+
 
       }),
       catchError(error => {
@@ -103,72 +109,73 @@ export class ClientComponent {
         return error.error.message
       })
     ).subscribe()
+
+
   }
 
-  verTransacciones(id:any){
+  verTransacciones(id: any) {
     this.transacService.listarPorCliente(id).pipe(
-      tap(data =>{
+      tap(data => {
         this.transacciones = data.data
       }),
-      catchError(error =>{
+      catchError(error => {
         return error.error.message
       })
     ).subscribe()
   }
 
-  actualizarCliente(){
+  actualizarCliente() {
 
-    this.clienteAsignado = this.cliente
     console.log(this.cliente);
-    
+
     this.clientService.actualizarCliente(this.cliente).pipe(
-      tap(data =>{
+      tap(data => {
         console.log(data);
-        
-  
+
+
         if (data.status == '422') {
-  
+
           const errors = data.validationError;
-  
+
           Object.keys(errors).forEach(key => {
-  
+
             const errorMessage = errors[key][0]
             this.toastr.error(errorMessage, 'Error')
-  
-  
+
+
           });
         } else if (data.status == '500' || data.status == '404') {
           this.toastr.error(data.message, 'Error');
-        }else{
+        } else {
           this.toastr.success(data.message, 'Exito');
           this.obtenerClientes()
           this.edit = false
         }
       }),
-      catchError(error=>{
+      catchError(error => {
         return error.error.message
       })
     ).subscribe()
-    
+
   }
 
-  asignarCliente(cliente:any){
-    this.clienteAsignado = cliente
+  asignarCliente(cliente: any) {
     this.cliente = cliente
     console.log(this.cliente, this.clienteAsignado);
-    
+
   }
 
-  editar(){
+  editar() {
     this.edit = true
   }
 
-  cancelarEditar(){
-    console.log(this.clienteAsignado);
-    
+
+  cancelarEditar() {
+
     // this.cliente = this.clienteAsignado
-    this.cliente.telefono_dos = '096633225511'
     this.edit = false
   }
-
+  cerrar() {
+    this.cliente = this.clienteClear
+  }
 }

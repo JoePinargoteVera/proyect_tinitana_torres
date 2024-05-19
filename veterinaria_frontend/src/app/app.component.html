@@ -1,6 +1,11 @@
 
 <ng-container *ngIf="showNavbar">
-    <app-sidebar  class="navLateral col-lg-12 col-md-12 col-sm-12 col-xs-12" [ngClass]="{'collapsed': isCollapsed}"></app-sidebar>
+    <overlay-scrollbars [options]="{ scrollbars: { visibility: 'auto',
+    autoHide: 'leave',
+    autoHideDelay: 800, } }">
+
+    <app-sidebar   class="navLateral col-lg-12 col-md-12 col-sm-12 col-xs-12" [ngClass]="{'collapsed': isCollapsed}"></app-sidebar>
+</overlay-scrollbars>
 </ng-container>
 <div [style.marginLeft.px]="showNavbar && !isCollapsed ? 330 : 0" class="content" [ngClass]="{'collapsed': isCollapsed}">
     <app-navbar (toggleSidebarEvent)="toggleSidebar()" *ngIf="showNavbar"></app-navbar>

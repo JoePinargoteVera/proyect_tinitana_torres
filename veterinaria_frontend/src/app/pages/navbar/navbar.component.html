@@ -3,24 +3,77 @@
     <button class="btn toggle-btn" (click)="toggleSidebar()">
       <i class="bi bi-arrow-left-right text-light font-weight-bold"></i>
     </button>
-    
 
-    <div class="dropdown align-items-sm-end me-4" >
-      <a href="dropdownUser1" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="true">
-          <img [src]="user.imagen ? user.imagen : '../../../assets/avatar.png'" alt="{{user.name}}" width="30" height="30" class="rounded-circle">
-          <span class="d-none d-sm-inline mx-1">{{user.name}}</span>
+
+
+    <div class="dropdown align-items-sm-end me-4 ms-auto">
+      <a href="dropdownUser1" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle"
+        id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="true">
+        <img [src]="user.imagen ? user.imagen : '../../../assets/avatar.png'" alt="{{user.name}}" width="30" height="30"
+          class="rounded-circle">
+        <span class="d-none d-sm-inline mx-1">{{user.name}}</span>
       </a>
-      
+
       <ul class="dropdown-menu dropdown-menu-dark text-small shadow dropdown-menu-end" aria-labelledby="dropdownUser1">
-          <li><a class="dropdown-item" href="#">New project...</a></li>
-          <li><a class="dropdown-item" href="#">Settings</a></li>
-          <li><a class="dropdown-item" href="perfil">Perfil</a></li>
-          <li>
-              <hr class="dropdown-divider">
-          </li>
-          <li><button class="dropdown-item" (click)="logOut()">Sign out</button></li>
+        <li><a class="dropdown-item" href="transaccion">Nueva factura...</a></li>
+        <li><a class="dropdown-item" href="setting">Configuracion</a></li>
+        <li><a class="dropdown-item" href="perfil">Perfil</a></li>
+        <li>
+          <hr class="dropdown-divider">
+        </li>
+        <li><button class="dropdown-item" (click)="logOut()">Sign out</button></li>
       </ul>
 
     </div>
+
+    <button type="button" class="border-0 position-relative me-3" style="background-color: transparent;"
+      data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">
+      <i class="bi bi-bell " style="color: white;"></i>
+      <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+        {{ notificacionCantidad}}
+        <span class="visually-hidden">unread messages</span>
+      </span>
+    </button>
+
+    <!-- <button class="btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight"
+      aria-controls="offcanvasRight"><i class="bi bi-bell " style="color: white;"></i>
+      <span class="badge badge-pill badge-danger">{{ notificacionCantidad}}</span></button> -->
+
   </div>
 </nav>
+
+<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+  <div class="offcanvas-header">
+    <h5 id="offcanvasRightLabel">Notificaciones</h5>
+    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body">
+
+    <div *ngIf="notificacionesList.length > 0">
+      <div class="list-group">
+        <button type="button" class="list-group-item list-group-item-action" (click)="abrirModal(notificacion)" *ngFor="let notificacion of notificacionesList"
+        data-bs-toggle="modal" data-bs-target="#exampleModal" >{{notificacion.mensaje}}</button>
+      </div>
+    </div>
+
+
+    <div *ngIf="notificacionesList.length == 0">
+      {{notificacionMensage}}
+    </div>
+
+  </div>
+</div>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        {{notificacionMensage}}
+      </div>
+    </div>
+  </div>
+</div>

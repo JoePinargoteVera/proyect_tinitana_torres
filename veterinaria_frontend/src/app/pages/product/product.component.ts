@@ -20,8 +20,8 @@ export class ProductComponent implements OnInit {
 
   imagenUp:boolean = false
   loading:boolean = false
-  addProduct: boolean = true
-  listProduct: boolean = false
+  addProduct: boolean = false
+  listProduct: boolean = true
   edit:boolean = false
   errorMessage: string = ''
   succesMessage: string = ''
@@ -30,7 +30,8 @@ export class ProductComponent implements OnInit {
   productosList: any
   proveedorList!: Provider[]
   categoriaList!: Category[]
-  producto: any = {}
+  productoClear: Product = {nombre: '', pvp: 0, costo: 0, stock: 0, categoria_id: 0, proveedor_id: 0}
+  producto: Product = {nombre: '', pvp: 0, costo: 0, stock: 0, categoria_id: 0, proveedor_id: 0}
 
   productoVer:any = {}
 
@@ -42,6 +43,7 @@ export class ProductComponent implements OnInit {
   ngOnInit(): void {
     this.obtenerCategorias()
     this.obtenerProveedores()
+    this.obtenerProductos()
   }
 
   showAddProductForm() {
@@ -98,9 +100,12 @@ export class ProductComponent implements OnInit {
   crearProductos() {
     this.loading = true
     
+    console.log(this.producto);
+    
     this.productService.crearProducto(this.producto).pipe(
       tap(data => {
         console.log(data);
+        
         
         this.loading = false
 
@@ -120,6 +125,7 @@ export class ProductComponent implements OnInit {
           this.toastr.error(data.message, 'Error');
         }else{
           this.toastr.success(data.message, 'Exito');
+          this.producto = this.productoClear
         }
       }),
       catchError(error => {
@@ -152,7 +158,6 @@ export class ProductComponent implements OnInit {
   obtenerProveedores() {
     this.providerService.listarProveedores().pipe(
       tap(data => {
-        console.log(data.data);
         this.proveedorList = data.data
       }),
       catchError(error => {
@@ -165,7 +170,6 @@ export class ProductComponent implements OnInit {
   obtenerCategorias() {
     this.categoryService.listarCategorias().pipe(
       tap(data => {
-        console.log(data.data);
         this.categoriaList = data.data
 
       }),

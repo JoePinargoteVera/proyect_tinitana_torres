@@ -1,0 +1,37 @@
+<div class="container rounded bg-white mt-5 mb-5">
+    <div class="row">
+        <div class="col-md-3 border-right">
+            <div class="d-flex flex-column align-items-center text-center p-3 py-5"><img class="rounded-circle mt-5" width="150px" [src]="configuracion.imagen ? configuracion.imagen : '../../../assets/avatar.png'"><span class="font-weight-bold">{{configuracion.nombre_empresa}}</span><span class="text-black-50">{{configuracion.email}}</span><span> </span></div>
+        </div>
+        <div class="col-md-5 border-right">
+            <div class="p-3 py-5">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h4 class="text-right">Informacion De Empresa</h4>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-md-6"><label class="labels">Nombres</label><input type="text" class="form-control" name="nombre_empresa" [(ngModel)]="configuracion.nombre_empresa"></div>
+                    <div class="col-md-6"><label class="labels">Apellidos</label><input type="text" class="form-control" value="" placeholder="surname"></div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-md-12"><label class="labels">Numero de Telefono</label><input type="text" class="form-control" name="telefono" [(ngModel)]="configuracion.telefono_uno"></div>
+                    <div class="col-md-12"><label class="labels">Dirección</label><input type="text" class="form-control" name="direccion" [(ngModel)]="configuracion.direccion"></div>
+                    <div class="col-md-12"><label class="labels">Address Line 2</label><input type="text" class="form-control" name="id" [(ngModel)]="configuracion.id"></div>
+                    <div class="col-md-12"><label class="labels">Postcode</label><input type="text" class="form-control" placeholder="enter address line 2" value=""></div>
+                    <div class="col-md-12"><label class="labels">State</label><input type="text" class="form-control" placeholder="enter address line 2" value=""></div>
+                    <!-- <div class="col-md-12"><label class="labels">Rol</label><input type="text" class="form-control" name="rol" [(ngModel)]="configuracion.rol"></div>
+                    <div class="col-md-12"><label class="labels">Email</label><input type="text" class="form-control" name="email" [(ngModel)]="configuracion.email"></div>
+                    <div class="col-md-12"><label class="labels">Education</label><input type="text" class="form-control" placeholder="education" value=""></div> -->
+                </div>
+                <div class="mt-5 text-center"><button class="btn btn-primary profile-button" type="button">Guardar Perfil</button></div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="p-3 py-5">
+                <div class="d-flex justify-content-between align-items-center experience"><span>configuracion</span><span class="border px-3 p-1 add-experience"><i class="fa fa-plus"></i>&nbsp;Experience</span></div><br>
+                <div class="col-md-12"><label class="labels">IVA</label><input type="text" class="form-control" name="iva" [(ngModel)]="configuracion.iva"></div> <br>
+                <div class="col-md-12"><label class="labels">stock minimo</label><input type="text" class="form-control" name="stock_minimo" [(ngModel)]="configuracion.stock_minimo"></div>
+            </div>
+        </div>
+    </div>
+</div>
+

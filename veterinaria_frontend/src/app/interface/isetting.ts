@@ -1,7 +1,7 @@
-export interface IResClient {
+export interface IResSetting {
     total: number;
-    data: Client[];
-    cliente:Client;
+    data: Setting[];
+    setting:Setting;
     status: string;
     message: string;
     error: string;
@@ -10,19 +10,16 @@ export interface IResClient {
       };
 }
 
-export interface Client {
+export interface Setting {
     id: number;
-    cedula: string;
-    nombres: string;
-    apellidos: string;
-    direccion?: string;
+    iva: number;
+    stock_minimo: number;
+    ruc: string;
+    nombre_empresa?: string;
     telefono_uno?: string;
     telefono_dos?: string;
     email: string;
-    nacionalidad?: string;
-    estado: boolean;
-    fecha_nacimiento?: Date;
-    genero?: string;
-    imagen?:string;
+    imagen: string
+    direccion?:string;
 
 }

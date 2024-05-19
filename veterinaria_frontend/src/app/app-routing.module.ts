@@ -12,6 +12,7 @@ import { CategoryComponent } from './pages/category/category.component';
 import { ProfileComponent } from './pages/profile/profile.component';
 import { InventoryComponent } from './pages/inventory/inventory.component';
 import { TransactionComponent } from './pages/transaction/transaction.component';
+import { SettingsComponent } from './pages/settings/settings.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -24,7 +25,8 @@ const routes: Routes = [
   { path: 'categorias', component: CategoryComponent, canActivate: [AuthGuard] },
   { path: 'perfil', component: ProfileComponent, canActivate: [AuthGuard] },
   { path: 'inventario', component: InventoryComponent, canActivate: [AuthGuard] },
-  { path: 'transaccion', component: TransactionComponent, canActivate: [AuthGuard] }
+  { path: 'transaccion', component: TransactionComponent, canActivate: [AuthGuard] },
+  { path: 'setting', component: SettingsComponent, canActivate: [AuthGuard] }
 
 ];
 

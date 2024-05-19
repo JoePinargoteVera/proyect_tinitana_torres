@@ -1,8 +1,8 @@
 <div class="mt-5 ">
   <div class="row justify-content-center border-bottom border-2 w-100">
     <div class="col-auto">
-      <button class="btn rounded-0" [class.selected]="addProduct" (click)="showAddProductForm()">NUEVO</button>
       <button class="btn rounded-0" [class.selected]="!addProduct" (click)="showListProducts()">VER</button>
+      <button class="btn rounded-0" [class.selected]="addProduct" (click)="showAddProductForm()">NUEVO</button>
     </div>
   </div>
   <div *ngIf="addProduct" class="mt-3" id="">
@@ -76,15 +76,15 @@
           <div class="col-md-4 d-flex align-items-center">
             
               <label for="proveedor" class="form-label me-2">Proveedor</label>
-              <select class="form-select" name="proveedor_id" [(ngModel)]="producto.proveedor_id" required>
-                <option selected disabled>Seleccione un proveedor</option>
-                <option *ngFor="let proveedor of proveedorList" [value]="proveedor.id">{{proveedor.nombre}}</option>
+              <select class="form-select" name="proveedor_id" [(ngModel)]="producto.proveedor_id">
+                <option selected>Seleccione un proveedor</option>
+                <option *ngFor="let proveedor of proveedorList" [value]=proveedor.id>{{proveedor.nombre}}</option>
               </select>
           </div>
           <div class="col-md-4 d-flex align-items-center">
               <label for="categoria" class="form-label me-2">Categoría</label>
-              <select class="form-select" name="categoria_id" [(ngModel)]="producto.categoria_id" required>
-                <option selected disabled>Seleccione una categoría</option>
+              <select class="form-select" name="categoria_id" [(ngModel)]="producto.categoria_id">
+                <option selected>Seleccione una categoría</option>
                 <option *ngFor="let categoria of categoriaList" [value]="categoria.id">{{categoria.nombre}}</option>
               </select>
 

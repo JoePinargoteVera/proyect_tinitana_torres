@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { catchError, tap } from 'rxjs';
 import { CategoryService } from 'src/app/Service/category.service';
@@ -9,23 +9,24 @@ import { Category } from 'src/app/interface/icategory';
   templateUrl: './category.component.html',
   styleUrls: ['./category.component.css']
 })
-export class CategoryComponent {
+export class CategoryComponent implements OnInit {
 
   loading:boolean = false
-  addCategory:boolean=true
-  listCategory:boolean=false
+  addCategory:boolean=false
+  listCategory:boolean=true
   errorMessage:string = ''
   succesMessage:string = ''
   filtro:string=''
   imagenes: any[] = [];
   categoryList!:Category[]
-  category:Category = {
-    nombre: '',
-    descripcion: ''
-  }
+  category:Category = {nombre: '',descripcion: '' }
+  categoryClear:Category = {nombre: '',  descripcion: ''  }
 
   constructor(private categoryService:CategoryService, private toastr: ToastrService){
 
+  }
+  ngOnInit(): void {
+    this.obtenerCategorias()
   }
 
   showAddCategoryForm(){
@@ -79,6 +80,7 @@ export class CategoryComponent {
           this.toastr.error(data.error, 'Error');
         }else{
           this.toastr.success(data.message, 'Exito');
+          this.category = this.categoryClear
         }
 
       }),

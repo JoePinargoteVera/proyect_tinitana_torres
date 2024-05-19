@@ -53,11 +53,27 @@ export class ProductService {
     return this.http.patch<IResProduct>(`${url}producto/actualizar`, body, options)
   }
 
-  eliminarProducto(id: number):Observable<IResProduct>{
+  eliminarProducto(id: number | undefined):Observable<IResProduct>{
     const token = this.cookieService.get('token');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     const options = { headers: headers };
     return this.http.put<IResProduct>(`${url}producto/eliminar`,{'id':id},options)
+  }
+
+  incrementar(id:number, cantidad:number):Observable<IResProduct>{
+    const body = {id: id, cantidad:cantidad}
+    const token = this.cookieService.get('token');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    const options = { headers: headers };
+    return this.http.put<IResProduct>(`${url}producto/incrementar`, body, options)
+  }
+
+  decrementar(id:number, cantidad:number):Observable<IResProduct>{
+    const body = {id: id, cantidad:cantidad}
+    const token = this.cookieService.get('token');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    const options = { headers: headers };
+    return this.http.put<IResProduct>(`${url}producto/decrementar`, body, options)
   }
 
 }

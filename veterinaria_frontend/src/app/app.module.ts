@@ -25,12 +25,14 @@ import { CategoryComponent } from './pages/category/category.component';
 import { InventoryComponent } from './pages/inventory/inventory.component';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { ToastrModule } from 'ngx-toastr';
-import { NgApexchartsModule} from 'ng-apexcharts';
 import { TransactionComponent } from './pages/transaction/transaction.component'
 import { NgSelectModule } from '@ng-select/ng-select';
+import { NgxSelectModule } from 'ngx-select-ex';
 import { NgScrollbarModule } from 'ngx-scrollbar';
 import { ConfirmInterceptor } from './confirm.interceptor';
 import { FormatDatePipe } from './pipes/format-date.pipe';
+import { OverlayscrollbarsModule } from "overlayscrollbars-ngx";
+import { SettingsComponent } from './pages/settings/settings.component';
 
 const appSettings = AppSettings.readAppSettings();
 
@@ -59,18 +61,19 @@ export function jwtOptionsFactory(cookieService: CookieService) {
     InventoryComponent,
     TransactionComponent,
     FormatDatePipe,
+    SettingsComponent,
   ],
   imports: [
     BrowserModule,
     NgScrollbarModule,
     BrowserAnimationsModule,
-    NgApexchartsModule,
     NgSelectModule,
     AppRoutingModule,
+    NgxSelectModule,
     AngularFireModule.initializeApp(appSettings.firebaseConfig),
     AngularFireStorageModule,
     NgxPaginationModule,
-
+    OverlayscrollbarsModule,
     FormsModule,
     HttpClientModule,
     ReactiveFormsModule,
@@ -82,7 +85,7 @@ export function jwtOptionsFactory(cookieService: CookieService) {
       },
     }),
     ToastrModule.forRoot({
-      timeOut: 3000,
+      timeOut: 5000,
       positionClass: 'toast-top-right',
       preventDuplicates: true,
     }),

@@ -1,8 +1,9 @@
 <div class="mt-5 ">
   <div class="row justify-content-center border-bottom border-2 w-100">
     <div class="col-auto">
-      <button class="btn rounded-0" [class.selected]="addCategory" (click)="showAddCategoryForm()">NUEVO</button>
       <button class="btn rounded-0" [class.selected]="!addCategory" (click)="showListCategories()">VER</button>
+      <button class="btn rounded-0" [class.selected]="addCategory" (click)="showAddCategoryForm()">NUEVO</button>
+      
     </div>
   </div>
 

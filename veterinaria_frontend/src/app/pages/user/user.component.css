@@ -70,3 +70,9 @@
   .card-body{
     height: 100px;
   }
+
+   .modal-flex {
+    display: flex;
+    /* justify-content: space-between; */
+    align-items: center;
+  }

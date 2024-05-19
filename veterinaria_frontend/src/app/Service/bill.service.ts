@@ -59,10 +59,10 @@ export class BillService {
     return this.http.delete<IResBill>(`${url}factura/eliminar?id=${id}`)
   }
 
-  enviarFactura(id:number):Observable<IResBill>{
+  enviarFactura(id:number, formData:any):Observable<IResBill>{
     const token = this.cookieService.get('token');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     const options = { headers: headers };
-    return this.http.get<IResBill>(`${url}factura/enviar?id=${id}`,options)
+    return this.http.post<IResBill>(`${url}factura/enviar?id=${id}`, formData,options)
   }
 }

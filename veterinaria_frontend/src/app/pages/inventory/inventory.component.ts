@@ -3,6 +3,7 @@ import { catchError, tap } from 'rxjs';
 import { ProductService } from 'src/app/Service/product.service';
 import { Product } from 'src/app/interface/iproduct';
 import { PaginationInstance, PaginationService } from 'ngx-pagination';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-inventory',
@@ -21,14 +22,79 @@ export class InventoryComponent implements OnInit {
   filtro: string = ''
   imagenes: any[] = [];
   productosList!: Product[]
+  cantidad:number = 0
+  id:number = 0
 
-  constructor(private productService: ProductService, private paginationService: PaginationService) {
+  constructor(private productService: ProductService, private toastr: ToastrService) {
 
   }
   ngOnInit(): void {
     this.obtenerProductos()
   }
 
+  obtenerId(id:any){
+    this.id = id
+  }
+
+  aniadirStock(){
+    console.log(this.id, this.cantidad);
+    
+    this.productService.incrementar(this.id, this.cantidad).pipe(
+      tap(data =>{
+        console.log(data);
+        this.obtenerProductos()
+        
+      }),
+      catchError(error =>{
+        console.log(error);
+        
+        return error.message
+      })
+    ).subscribe()
+  }
+
+  quitarStock(){
+    this.productService.decrementar(this.id, this.cantidad).pipe(
+      tap(data =>{
+        console.log(data);
+        this.obtenerProductos()
+        
+      }),
+      catchError(error =>{
+        console.log(error);
+        
+        return error.message
+      })
+    ).subscribe()
+  }
+
+  
+
+  eliminarProducto(id:number | undefined){
+    this.productService.eliminarProducto(id).pipe(
+      tap(data=>{
+        if (data.status == '404') {
+
+            this.toastr.error(data.message, 'Error')
+
+
+
+        } else if (data.status == '500') {
+          this.toastr.error(data.message, 'Error');
+        }else{
+          this.obtenerProductos()
+          this.toastr.success(data.message, 'Exito');
+          
+        }
+
+        
+      }),
+      catchError(error =>{
+        this.toastr.error(error.error.message, 'Error');
+        return error.error.message
+      })
+    ).subscribe()
+  }
   obtenerProductos() {
     this.productService.listarProductos().pipe(
       tap(data => {

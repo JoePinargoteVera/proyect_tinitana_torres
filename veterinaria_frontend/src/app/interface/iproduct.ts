@@ -1,3 +1,6 @@
+import { Provider } from "@angular/core";
+import { Category } from "./icategory";
+
 export interface IResProduct {
     total: number;
     data: Product[];
@@ -21,6 +24,10 @@ export interface Product {
     stock: number;
     categoria_id: number;
     proveedor_id: number;
+
+    proveedor?:Provider;
+    categoria?:Category;
+    
     fecha_elaboracion?: Date;
     fecha_vencimiento?: Date;
     fecha_adquisicion?: Date;

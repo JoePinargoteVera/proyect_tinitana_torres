@@ -22,6 +22,9 @@
   background-color: #2e6da4;
 }
 
+.edit-mode {
+  background-color: lightyellow; /* Cambia el color de fondo a amarillo claro */
+}
 
 .form-control{
   background-color: transparent;
@@ -35,4 +38,11 @@
 
 .form-select:focus{
 box-shadow: none;
+}
+
+.scrollable-div {
+  max-height: 200px; /* Ajusta la altura máxima según tus necesidades */
+  overflow-y: auto; /* Permite el scroll solo en el eje y */
+  /*border: 1px solid #ccc;  Opcional: añade un borde para visualizar mejor el div */
+  padding: 15px; /* Opcional: añade padding para el contenido */
 }

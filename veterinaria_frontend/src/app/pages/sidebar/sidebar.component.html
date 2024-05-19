@@ -1,103 +1,102 @@
-
-
-<div class="barra ">
+<div class="barra">
     Inventario
-</div>
-
+  </div>
+  
   <div class="container-fluid w-100">
-    
     <div class="row flex-nowrap">
-        
-        <div class="col-auto col-md-3 col-xl-2  bg-dark w-100"> <!-- -->
-            
-            <div class="d-flex flex-column align-items-center align-items-sm-start pt-2 text-white min-vh-100 w-100">
-
-                <figure class="full-width navLateral-body-tittle-menu">
-                    <div>
-                        <img [src]="user.imagen ? user.imagen : '../../../assets/avatar.png'" alt="{{user.name}}" width="85" height="75" class="rounded-circle">
-                    </div>
-                    <figcaption>
-                        <span>
-                            {{user.name}}<br>
-                            <small>{{user.rol}}</small>
-                        </span>
-                    </figcaption>
-                </figure>
-            
-                <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start text-light w-100" id="menu">
-                    <li class="nav-item w-100 hov">
-                        <a href="home" class="nav-link align-middle px-0">
-                            <i class="fs-4 bi-house me-4 ms-5"></i> <span class="ms-1 d-none d-sm-inline">HOME</span>
-                        </a>
-                    </li>
-                    <li class="divider-menu-h"></li>
-                    <li class="nav-item w-100 hov">
-                        <a href="inventario" class="nav-link px-0 align-middle" >
-                            <i class="fs-4 bi bi-card-list me-4 ms-5"></i>
-                             <span class="ms-1 d-none d-sm-inline">INVENTARIO</span> </a>
-                       
-                    </li>
-                    <li class="divider-menu-h"></li>
-                    <li class="nav-item w-100 hov">
-                        <a href="transaccion" class="nav-link px-0 align-middle" >
-                            <i class="fs-4 bi bi-receipt me-4 ms-5"></i>
-                             <span class="ms-1 d-none d-sm-inline">TRANSACCION</span> </a>
-                       
-                    </li>
-                    <li class="divider-menu-h"></li>
-                    <li class="nav-item w-100 hov">
-                        <a href="productos" class="nav-link px-0 align-middle" >
-                            <i class="fs-4 bi-table me-4 ms-5"></i> <span class="ms-1 d-none d-sm-inline">PRODUCTOS</span></a>
-                    </li>
-                    <li class="divider-menu-h"></li>
-                    <li class="nav-item w-100 hov">
-                        <a href="#clients" class="nav-link px-0 align-middle" data-bs-toggle="collapse">
-                            <i class="fs-4 bi-people me-4 ms-5"></i> <span class="ms-1 d-none d-sm-inline">USERS</span>
-                        </a>
-                    </li>
-                    <div class="hov w-100 back">
-                        <ul class="collapse nav flex-column" id="clients" data-bs-parent="#menu">
-                            <li class="w-100">
-                                <a href="usuarios" class="nav-link px-0 ms-5">  <i class="bi bi-person-gear"></i> <span class="d-none d-sm-inline me-4 ms-5">ADMISTRADORES</span></a>
-                            </li>
-                            <li>
-                                <a href="clientes" class="nav-link px-0 ms-5"> <i class="bi bi-person"></i>  <span class="d-none d-sm-inline me-4 ms-5">CLIENTES</span></a>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <li class="divider-menu-h"></li>
-                    <li class="nav-item w-100 hov">
-                        <a href="#products" data-bs-toggle="collapse" class="nav-link px-0 align-middle">
-                            <i class="fs-4 bi-grid me-4 ms-5"></i> <span class="ms-1 d-none d-sm-inline">ADMINISTRACION</span> </a>
-                            
-                    </li>
-                    <div class="hov w-100 back ">
-                        <ul class="collapse nav flex-column" id="products" data-bs-parent="#menu">
-                            <li >
-                                <a href="proveedores" class="nav-link px-0 ms-5">  <i class="bi bi-shop"></i> <span class="d-none d-sm-inline me-4 ms-5">PROVEEDORES</span></a>
-                            </li>
-                            <li>
-                                <a href="categorias" class="nav-link px-0 ms-5">  <i class="bi bi-tags"></i> <span class="d-none d-sm-inline me-4 ms-5">CATEGORIAS</span></a>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <li class="divider-menu-h"></li>
-                    <li class="nav-item w-100 hov">
-                        <a href="#configuracion" data-bs-toggle="collapse" class="nav-link px-0 align-middle">
-                            <i class=" fs-4 ms-5 me-4 bi-gear"></i> <span class="ms-1 d-none d-sm-inline">CONFIGURACION</span> </a>
-                    </li>
-                    <div class="hov w-100 back">
-                        <ul class="collapse nav flex-column" id="configuracion" data-bs-parent="#menu">
-                            <li class="w-100">
-                                <a href="#" class="nav-link px-0 ms-5">  1 <span class="d-none d-sm-inline me-4 ms-5">Product</span></a>
-                            </li>
-                        </ul>
-                    </div>
-                        
-                </ul>
+      <div class="col-auto col-md-3 col-xl-2 bg-dark w-100">
+        <div class="d-flex flex-column align-items-center align-items-sm-start pt-2 text-white min-vh-100 w-100">
+          <figure class="full-width navLateral-body-tittle-menu">
+            <div>
+              <img [src]="user.imagen ? user.imagen : '../../../assets/avatar.png'" alt="{{user.name}}" width="85" height="75" class="rounded-circle">
             </div>
+            <figcaption>
+              <span>
+                {{user.name}}<br>
+                <small>{{user.rol}}</small>
+              </span>
+            </figcaption>
+          </figure>
+  
+          <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start text-light w-100" id="menu">
+            <li class="nav-item w-100 hov" routerLinkActive="active">
+              <a routerLink="/home" class="nav-link align-middle px-0">
+                <i class="fs-4 bi-house me-4 ms-5"></i> <span class="ms-1 d-none d-sm-inline">HOME</span>
+              </a>
+            </li>
+            <li class="divider-menu-h"></li>
+            <li class="nav-item w-100 hov" routerLinkActive="active">
+              <a routerLink="/inventario" class="nav-link px-0 align-middle">
+                <i class="fs-4 bi bi-card-list me-4 ms-5"></i> <span class="ms-1 d-none d-sm-inline">INVENTARIO</span>
+              </a>
+            </li>
+            <li class="divider-menu-h"></li>
+            <li class="nav-item w-100 hov" routerLinkActive="active">
+              <a routerLink="/transaccion" class="nav-link px-0 align-middle">
+                <i class="fs-4 bi bi-receipt me-4 ms-5"></i> <span class="ms-1 d-none d-sm-inline">FACTURACION</span>
+              </a>
+            </li>
+            <li class="divider-menu-h"></li>
+            <li class="nav-item w-100 hov" routerLinkActive="active">
+              <a routerLink="/productos" class="nav-link px-0 align-middle">
+                <i class="fs-4 bi-table me-4 ms-5"></i> <span class="ms-1 d-none d-sm-inline">PRODUCTOS</span>
+              </a>
+            </li>
+            <li class="divider-menu-h"></li>
+            <li class="nav-item w-100 hov">
+              <a href="#users" class="nav-link px-0 align-middle" data-bs-toggle="collapse">
+                <i class="fs-4 bi-people me-4 ms-5"></i> <span class="ms-1 d-none d-sm-inline">USERS</span>
+                <i class="bi" [ngClass]="{'bi-caret-up-fill': isClientsCollapsed, 'bi-caret-down-fill': !isClientsCollapsed}"></i>
+              </a>
+              
+            </li>
+            <div class="hov w-100 back">
+                <ul class="collapse nav flex-column" id="users" data-bs-parent="#menu" (shown.bs.collapse)="isClientsCollapsed = true" (hidden.bs.collapse)="isClientsCollapsed = false">
+                  <li class="w-100" routerLinkActive="active">
+                    <a routerLink="/usuarios" class="nav-link px-0 ms-5">
+                      <i class="bi bi-person-gear"></i> <span class="d-none d-sm-inline me-4 ms-5">ADMINISTRADORES</span>
+                    </a>
+                  </li>
+                  <li routerLinkActive="active">
+                    <a routerLink="/clientes" class="nav-link px-0 ms-5">
+                      <i class="bi bi-person"></i> <span class="d-none d-sm-inline me-4 ms-5">CLIENTES</span>
+                    </a>
+                  </li>
+                </ul>
+              </div>
+
+            <li class="divider-menu-h"></li>
+            <li class="nav-item w-100 hov">
+              <a href="#admin" class="nav-link px-0 align-middle" data-bs-toggle="collapse">
+                <i class="fs-4 bi-grid me-4 ms-5"></i> <span class="ms-1 d-none d-sm-inline">ADMINISTRACION</span>
+                <i class="bi " [ngClass]="{'bi-caret-up-fill': isProductsCollapsed, 'bi-caret-down-fill': !isProductsCollapsed}"></i>
+              </a>
+            </li>
+            <div class="hov w-100 back">
+                <ul class="collapse nav flex-column" id="admin" data-bs-parent="#menu" (shown.bs.collapse)="isProductsCollapsed = true" (hidden.bs.collapse)="isProductsCollapsed = false">
+                  <li routerLinkActive="active">
+                    <a routerLink="/proveedores" class="nav-link px-0 ms-5">
+                      <i class="bi bi-shop"></i> <span class="d-none d-sm-inline me-4 ms-5">PROVEEDORES</span>
+                    </a>
+                  </li>
+                  <li routerLinkActive="active">
+                    <a routerLink="/categorias" class="nav-link px-0 ms-5">
+                      <i class="bi bi-tags"></i> <span class="d-none d-sm-inline me-4 ms-5">CATEGORIAS</span>
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            <li class="divider-menu-h"></li>
+            <li class="nav-item w-100 hov" routerLinkActive="active">
+              <a routerLink="/setting" class="nav-link px-0 align-middle" data-bs-toggle="collapse">
+                <i class="fs-4 ms-5 me-4 bi-gear"></i> <span class="ms-1 d-none d-sm-inline">CONFIGURACION</span>
+
+              </a>
+
+            </li>
+          </ul>
         </div>
+      </div>
     </div>
-</div>
+  </div>
+  

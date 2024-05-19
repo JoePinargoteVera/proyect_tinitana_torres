@@ -1,8 +1,8 @@
 <div class="mt-5 ">
   <div class="row justify-content-center border-bottom border-2 w-100">
     <div class="col-auto">
-      <button class="btn rounded-0" [class.selected]="addProvider" (click)="showAddProviderForm()">NUEVO</button>
       <button class="btn rounded-0" [class.selected]="!addProvider" (click)="showListPRoviders()">VER</button>
+      <button class="btn rounded-0" [class.selected]="addProvider" (click)="showAddProviderForm()">NUEVO</button>
     </div>
   </div>
 
@@ -143,8 +143,8 @@
         <ul class="list-group mb-1 me-1" *ngFor="let proveedor of proveedorList">
           <li class="list-group-item d-flex justify-content-between align-items-center bg-light">
             <div>
-              <div>{{ proveedor.razon_social }} {{proveedor.email}}</div>
-              <div class="fw-lighter text-primary">{{proveedor.ruc}}</div>
+              <div>{{ proveedor.nombre }} {{proveedor.ruc}}</div>
+              <div class="fw-lighter text-primary">{{proveedor.email}}</div>
 
             </div>
             <div class="dropdown">
@@ -152,7 +152,7 @@
                 <i class="bi bi-three-dots"></i>
               </button>
               <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <li><a class="dropdown-item" href="#">Editar</a></li>
+                <li><a class="dropdown-item" href="#" (click)="[asignarProveedor(proveedor),obtenerProductos(proveedor.id)]" data-bs-toggle="modal" data-bs-target="#verProveedor">Ver</a></li>
                 <li><a class="dropdown-item" href="#">Eliminar</a></li>
               </ul>
             </div>
@@ -165,6 +165,70 @@
 
     </div>
   </div>
+</div>
 
+<div class="modal fade" id="verProveedor" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">{{proveedor.nombre}}</h1>
+      <button type="button" class="btn-close alin" (click)="[cerrar()]" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body">
+        <div class="row">
+          <!-- Columna de la imagen y descripción producto.imagen ? (producto.imagen) : '../../../assets/productos_back.png' -->
+          <div class="col-md-4 mx-2 bg-light " style="width: 25%;">
+            <div class="px-1">
+            <div class="m-2 image-wrapper">
+              <img [src]="proveedor.imagen ? (proveedor.imagen) : '../../../assets/avatar.png'" alt="Imagen del cliente" class="mb-3 rounded-5" style="max-width: 100%; height: 150px;">
+            </div>
+            <!-- Botón para editar la imagen -->
+            <!-- <button class="btn btn-sm btn-primary position-absolute top-0 translate-middle" type="button">
+              Editar imagen
+            </button> -->
+            <!-- Descripción del producto -->
+            <h5>Direccion</h5>
+            <p class="ms-2">{{proveedor.direccion}} </p>
+            </div>
+           
+          </div>
+      
+          <!-- Columna de la información del cliente-->
+          <div class="col-md-4 bg-light mx-2">
+            <div class="px-1 mt-2">
+              <div class="d-inline"><h5 class="mb-3 d-inline">Información del Proveedor </h5> <button (click)="editar()" class="btn d-inline bg-primary-subtle"><i class="bi bi-pen d-inline" ></i></button></div>
+              <p><strong>Ruc:</strong> <input type="text"  class="form-control d-inline w-50 py-0" [(ngModel)]="proveedor.ruc" [disabled]="!edit" [ngClass]="{'edit-mode': edit}" ></p>
+              <p><strong>Email:</strong> <input type="text"  class="form-control  d-inline py-0" [(ngModel)]="proveedor.email" [disabled]="!edit" [ngClass]="{'edit-mode': edit}" style="width:auto"></p>
+              <p><strong>Telefono 1:</strong> <input type="text" class="form-control  d-inline w-50 py-0" [(ngModel)]="proveedor.telefono_uno" [disabled]="!edit" [ngClass]="{'edit-mode': edit}"></p>
+              <p><strong>Telefono 2:</strong> {{ proveedor.telefono_dos}}</p>
+            <!-- Más información del producto según tus necesidades rounded-0 border-bottom : cliente.telefono_uno ? 'no registrado'-->
+            </div>
+            
+          </div>
+      
+          <!-- Columna de la información del proveedor -->
+          <div class="col-md-4 bg-light mx-2 ">
+            <div class="px-1 mt-2">
+              <h5 class="mb-3">Productos del proveedor</h5>
+
+              <div class="scrollable-div">
+                <div *ngFor="let producto of productosProveedor">
+                  <p>{{producto?.nombre}} </p>
+                  </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="[cancelarEditar(), cerrar()]" data-bs-dismiss="modal">Cerrar</button>
+        <button type="button" class="btn btn-secondary" (click)="cancelarEditar()" [disabled]="!edit">Cancelar edicion</button>
+        <button type="button" class="btn btn-primary" (click)="actualizarProveedor()" [disabled]="!edit">Guardar Cambios</button>
+      </div>
+    </div>
+  </div>
 </div>
 

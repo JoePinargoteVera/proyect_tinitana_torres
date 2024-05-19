@@ -22,6 +22,13 @@ export class ProviderService {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     const options = { headers: headers };
     return this.http.get<IResProvider>(`${url}proveedor/listar`, options);
+  } //listar_productos
+
+  listarProductos(id:number):Observable<IResProvider>{
+    const token = this.cookieService.get('token');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    const options = { headers: headers };
+    return this.http.get<IResProvider>(`${url}proveedor/listar_productos?id=${id}`, options);
   }
 
   verProveedor(id:number):Observable<IResProvider>{

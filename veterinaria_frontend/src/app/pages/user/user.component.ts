@@ -1,5 +1,5 @@
 import { Binary } from '@angular/compiler';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { catchError, tap } from 'rxjs';
 import { UserService } from 'src/app/Service/user.service';
 import { User } from 'src/app/interface/iuser';
@@ -13,7 +13,7 @@ import { ToastrService } from 'ngx-toastr';
   templateUrl: './user.component.html',
   styleUrls: ['./user.component.css']
 })
-export class UserComponent {
+export class UserComponent implements OnInit {
 
 
   loading: boolean = false
@@ -21,21 +21,19 @@ export class UserComponent {
   imagenes: any[] = [];
   base64Image: string = '';
   filtro: String = ''
-  addUser: boolean = true
-  listUser: boolean = false
+  addUser: boolean = false
+  listUser: boolean = true
   errorMessage: string = ''
   succesMessage: string = ''
   userList!: User[]
-  user: User = {
-    name: '',
-    password: '',
-    email: '',
-    rol: '',
-    imagen: null
-  }
+  userClear: User = {name: '',password: '',email: '',rol: '',imagen: null  }
+  user: User = {name: '',password: '',email: '',rol: '',imagen: null  }
 
   constructor(private userService: UserService, private imagenesService: ImagenesService,
     private sanitizer: DomSanitizer, private toastr: ToastrService) { }
+  ngOnInit(): void {
+    this.obtenerUsuarios()
+  }
 
   getUrl(url: string) {
     return this.sanitizer.bypassSecurityTrustUrl(url);
@@ -56,8 +54,11 @@ export class UserComponent {
         });
       };
     }
+  }
 
-
+  asignarUser(user:User){
+    this.user = user
+    console.log(this.user);
   }
 
   showAddUserForm() {
@@ -124,6 +125,7 @@ export class UserComponent {
           this.toastr.error(data.error, 'Error');
         } else {
           this.toastr.success(data.message, 'Exito');
+          this.user = this.userClear
         }
         this.succesMessage = data.message
 
@@ -140,6 +142,10 @@ export class UserComponent {
       })
     ).subscribe()
 
+  }
+
+  cerrar(){
+    this.user = this.userClear
   }
 
 }

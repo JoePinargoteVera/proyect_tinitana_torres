@@ -4,7 +4,7 @@
 
 
 .barra{
-    background-color: rgb(251, 142, 59);
+    background-color: rgb(206, 39, 187);
     height: 54.45px;
     text-align: center;
     font-size: 25px;
@@ -46,11 +46,11 @@
 
 /* Cambiar el color de fondo de los elementos li al pasar el cursor */
 .nav-item:hover {
-    background-color: rgb(251, 142, 59);
+    background-color: rgb(206, 39, 187);
 }
 
 .hov li:hover {
-    background-color: rgb(251, 142, 59); /* Color de fondo al pasar el cursor */
+    background-color: rgb(255, 98, 237); /* Color de fondo al pasar el cursor */
 }
 
 #menu {
@@ -60,3 +60,20 @@
 .back {
     background-color: #4e4e4e;
 }
+
+.active {
+    background-color: #6c757d;
+    color: white;
+  }
+  
+  /* .nav-link {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  } */
+  
+  .bi {
+    transition: transform 0.3s;
+    text-align: end;
+  }
+  

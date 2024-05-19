@@ -4,34 +4,15 @@ import { BillService } from 'src/app/Service/bill.service';
 import { ClientService } from 'src/app/Service/client.service';
 import { ProductService } from 'src/app/Service/product.service';
 import { AppComponent } from 'src/app/app.component';
+import Chart from 'chart.js/auto';
 
-import {
-  ApexAxisChartSeries,
-  ApexChart,
-  ApexXAxis,
-  ApexTitleSubtitle,
-  ApexDataLabels,
-  ApexGrid,
-  ApexLegend,
-  ApexMarkers,
-  ApexStroke
-} from "ng-apexcharts";
+
 import { Product } from 'src/app/interface/iproduct';
 import { Client } from 'src/app/interface/iclient';
 import { ToastrService } from 'ngx-toastr';
+import { DashboardService } from 'src/app/Service/dashboard.service';
 
-export type ChartOptions = {
-  series: ApexAxisChartSeries;
-  chart: ApexChart;
-  xaxis: ApexXAxis;
-  stroke: ApexStroke;
-  dataLabels: ApexDataLabels;
-  markers: ApexMarkers;
-  tooltip: any;
-  grid: ApexGrid;
-  legend: ApexLegend;
-  title: ApexTitleSubtitle;
-};
+
 
 
 @Component({
@@ -41,25 +22,15 @@ export type ChartOptions = {
 })
 export class HomeComponent implements OnInit {
 
-  // chartOptions!: ChartOptions;
-
   errorMessage: string = ''
   clientesList: Client[] = [];
   cantidadClientes: number = 0;
   productosList!: Product[];
-  // chartData!: number[];
-  // customerData!: any[];
-  // salesData!: any[];
-  // revenueData!: any[];
+  ventaActual:number=0  
 
-  selectedFilter: string = 'month';
-  view: [number, number] = [700, 400];
-  colorScheme = {
-    domain: ['#5AA454', '#E44D25', '#CFC0BB', '#7aa3e5']
-  };
 
   constructor(private productService: ProductService, private clienteService: ClientService,
-    private billService: BillService, private appComponent: AppComponent, private toastr: ToastrService) {
+    private billService: BillService, private dashboard:DashboardService, private appComponent: AppComponent, private toastr: ToastrService) {
     appComponent.showNavbar = true
 
 
@@ -67,8 +38,93 @@ export class HomeComponent implements OnInit {
   ngOnInit(): void {
 
     this.obtenerCliente()
+    this.obtenerProductos()
+    this.ventasChart()
+    this.ventasProductosChart()
   }
 
+  ventasChart() {
+   this.dashboard.listarVentas().pipe(
+    tap(data=>{
+
+      this.ventaActual = data.ventasHoy.total
+      
+      const ctx = document.getElementById('chart1') as HTMLCanvasElement;
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          // labels: data.mes.map((venta: { mes: any; }) => venta.mes),
+          labels: data.ventasPorFecha.map((venta: any) => venta.fecha),
+          datasets: [
+            {
+              label: 'Ventas por Fecha',
+              data: data.ventasPorFecha.map((venta: any) => parseFloat(venta.total)),
+              backgroundColor: 'rgba(75, 182, 192, 0.5)',
+              borderColor: 'rgba(75, 192, 192, 1)',
+              borderWidth: 1
+            },
+            // {
+            //   label: 'Ventas por Mes',
+            //   data: data.ventasPorMes.map((venta: any) => parseFloat(venta.total)),
+              // backgroundColor: 'rgba(255, 99, 132, 0.5)',
+              // borderColor: 'rgba(255, 99, 132, 1)',
+            //   borderWidth: 1
+            // }
+    
+        ]
+        },
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true
+            }
+          }
+        }
+      });
+
+    }),
+    catchError(error=>{
+      return error.message
+    })
+   ).subscribe()
+  }
+
+  ventasProductosChart() {
+    this.dashboard.listarVentasProductos().pipe(
+     tap(data=>{
+ 
+      const labels = data.map((item: any) => item.nombre_producto);
+      const totals = data.map((item: any) => parseFloat(item.total_generado));
+    
+      const ctx = document.getElementById('chart2') as HTMLCanvasElement;
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Total por Producto sin IVA ',
+            data: totals,
+            backgroundColor: 'rgba(255, 99, 132, 0.5)',
+            borderColor: 'rgba(255, 99, 132, 1)',
+            borderWidth: 1
+          }]
+        },
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true
+            }
+          }
+        }
+      });
+ 
+     }),
+     catchError(error=>{
+       return error.message
+     })
+    ).subscribe()
+   }
+  
 
 
   obtenerCliente() {
@@ -77,8 +133,8 @@ export class HomeComponent implements OnInit {
         this.clientesList = data.data
         this.cantidadClientes = this.clientesList.length
       }),
-      catchError(error =>{
-        return error.error.message
+      catchError(error => {
+        return error.message
       })
     ).subscribe()
   }
@@ -91,7 +147,7 @@ export class HomeComponent implements OnInit {
         this.productosList = data.data
       }),
       catchError(error => {
-        this.errorMessage = error.error.message
+        this.errorMessage = error.message
         return this.errorMessage
       })
     ).subscribe()
